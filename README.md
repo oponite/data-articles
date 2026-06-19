@@ -1,13 +1,15 @@
 # data-articles
 
+https://oponite.github.io/data-articles/
+
 `data-articles` is a website featuring collection of data-driven articles at the intersection of sports, finance, math, and Python.
 
 The site is built with [Quarto](https://quarto.org/) and Jupyter notebooks. Source notebooks and article files live in the repository, while the rendered website is committed to `docs/` for GitHub Pages publishing.
 
 ## Current Articles
 
-- [Articles index](articles.qmd)
-- [What makes a basketball team win?](nba-scoring.ipynb)
+- [Articles index]((https://oponite.github.io/data-articles/articles.html))
+- [What makes a basketball team win?]([nba-scoring.ipynb](https://oponite.github.io/data-articles/nba-scoring.html))
 
 ## Repository Structure
 
