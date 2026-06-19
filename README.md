@@ -8,8 +8,8 @@ The site is built with [Quarto](https://quarto.org/) and Jupyter notebooks. Sour
 
 ## Current Articles
 
-- [Articles index]((https://oponite.github.io/data-articles/articles.html))
-- [What makes a basketball team win?]([nba-scoring.ipynb](https://oponite.github.io/data-articles/nba-scoring.html))
+- [Articles index](https://oponite.github.io/data-articles/articles.html)
+- [What makes a basketball team win?](https://oponite.github.io/data-articles/nba-scoring.html)
 
 ## Repository Structure
 

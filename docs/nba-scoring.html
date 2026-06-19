@@ -191,16 +191,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 <section id="methodology" class="level2">
 <h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
-<p>What I’m solving for can be described in 2 ways: 1. If we know how often a team shoots, rebounds, passes, steals, blocks shots, and turns the ball over, can we estimate how likely the team is to win?</p>
-<ol start="2" type="1">
-<li>Formally, <code>win probability per match (%) = (a * box_score_metric_1) + (b * box_score_metric_2) + ... + intercept</code></li>
+<p>What I’m solving for can be described in 2 ways:</p>
+<ol type="1">
+<li><p>If we know how often a team shoots, rebounds, passes, steals, blocks shots, and turns the ball over, can we estimate how likely the team is to win?</p></li>
+<li><p><code>win probability per match (%) = (a * box_score_metric_1) + (b * box_score_metric_2) + ... + intercept</code></p></li>
 </ol>
 <p>To conduct this experiment, I am using a type of regression model called Elastic Net.</p>
-<p>I chose this regression in particular for two reasons: 1. Many basketball statistics are related to one another.</p>
-<pre><code>- Teams that score more points (`PTS`) often record more assists (`AST`).
-
-- Teams that shoot efficiently (`FG_PCT`) tend to win more games (`WIN_PCT`).</code></pre>
-<ol start="2" type="1">
+<p>I chose this regression in particular for two reasons:</p>
+<ol type="1">
+<li><p>Many basketball statistics are related to one another.</p>
+<ul>
+<li><p>Teams that score more points (<code>PTS</code>) often record more assists (<code>AST</code>).</p></li>
+<li><p>Teams that shoot efficiently (<code>FG_PCT</code>) tend to win more games (<code>WIN_PCT</code>).</p></li>
+</ul></li>
 <li><p>I don’t know beforehand which statistics matter most.</p>
 <ul>
 <li><p>Some statistics may provide unique information.</p></li>
@@ -213,126 +216,130 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="running-the-experiment" class="level2">
 <h2 class="anchored" data-anchor-id="running-the-experiment">Running the Experiment</h2>
 <p>Let’s jump into the code.</p>
-<p>I’m using 2 datasets: - 2021-2026 regular season. <code>5</code> seasons, <code>30</code> teams, and <code>82</code> games/season/team - a healthy sample size for this regression. - 2021-2026 playoffs.</p>
+<p>I’m using 2 datasets:</p>
+<ul>
+<li><p>2021-2026 regular season. <code>5</code> seasons, <code>30</code> teams, and <code>82</code> games/season/team - a healthy sample size for this regression.</p></li>
+<li><p>2021-2026 playoffs.</p></li>
+</ul>
 <div id="settings-readable" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-18T16:50:24.846026Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-18T16:50:24.845871Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-18T16:50:24.848051Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-18T16:50:24.847658Z&quot;}}" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nba_api.stats.endpoints <span class="im">import</span> leaguegamelog</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> ElasticNetCV</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">'''</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">The notebook keeps raw game logs locally, then builds the team-season table from those games.</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">'''</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Seasons included in the analysis.</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>seasons <span class="op">=</span> [<span class="st">"2021-22"</span>, <span class="st">"2022-23"</span>, <span class="st">"2023-24"</span>, <span class="st">"2024-25"</span>, <span class="st">"2025-26"</span>]</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Local CSV files keep NBA.com downloads from running every time.</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>DATA_DIR <span class="op">=</span> Path(<span class="st">"data/nba"</span>)</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>DATA_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> {</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"regular_season"</span>: DATA_DIR <span class="op">/</span> <span class="st">"nba_team_games_regular_season.csv"</span>,</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"playoffs"</span>: DATA_DIR <span class="op">/</span> <span class="st">"nba_team_games_playoffs.csv"</span>,</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nba_api.stats.endpoints <span class="im">import</span> leaguegamelog</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> ElasticNetCV</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">'''</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">The notebook keeps raw game logs locally, then builds the team-season table from those games.</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">'''</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Seasons included in the analysis.</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>seasons <span class="op">=</span> [<span class="st">"2021-22"</span>, <span class="st">"2022-23"</span>, <span class="st">"2023-24"</span>, <span class="st">"2024-25"</span>, <span class="st">"2025-26"</span>]</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Local CSV files keep NBA.com downloads from running every time.</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>DATA_DIR <span class="op">=</span> Path(<span class="st">"data/nba"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>DATA_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> {</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"regular_season"</span>: DATA_DIR <span class="op">/</span> <span class="st">"nba_team_games_regular_season.csv"</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"playoffs"</span>: DATA_DIR <span class="op">/</span> <span class="st">"nba_team_games_playoffs.csv"</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s fetch the data from the <code>nba_api</code> library and print column headers for the regular season to see what we’re working with.</p>
 <div id="helpers-readable" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-18T16:50:24.849083Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-18T16:50:24.849008Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-18T16:50:24.852495Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-18T16:50:24.852022Z&quot;}}" data-execution_count="28">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gets one row per team-game from NBA.com for each season.</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fetch_games(season_type):</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    all_seasons <span class="op">=</span> []</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> season <span class="kw">in</span> seasons:</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Fetching </span><span class="sc">{</span>season<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>season_type<span class="sc">}</span><span class="ss"> games..."</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        games <span class="op">=</span> leaguegamelog.LeagueGameLog(</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            player_or_team_abbreviation<span class="op">=</span><span class="st">"T"</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            season<span class="op">=</span>season,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            season_type_all_star<span class="op">=</span>season_type,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            timeout<span class="op">=</span><span class="dv">60</span>,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        ).get_data_frames()[<span class="dv">0</span>]</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        games[<span class="st">"SEASON"</span>] <span class="op">=</span> season</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        games[<span class="st">"SEASON_TYPE"</span>] <span class="op">=</span> season_type</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        all_seasons.append(games)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="dv">1</span>)</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.concat(all_seasons, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Uses the local CSV if it exists; otherwise fetches the data once and saves it.</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_or_fetch(path, fetch_fn):</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> path.exists():</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Loading local file: </span><span class="sc">{</span>path<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pd.read_csv(path)</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> fetch_fn()</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    data.to_csv(path, index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Turns one row per team-game into one row per team-season.</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarize_team_seasons(games):</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    games <span class="op">=</span> games.copy()</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A team's blocks against are the opponent's blocks in the same game.</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    opponent_totals <span class="op">=</span> games.groupby(<span class="st">"GAME_ID"</span>)[[<span class="st">"BLK"</span>, <span class="st">"PF"</span>]].transform(<span class="st">"sum"</span>)</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    games[<span class="st">"BLKA"</span>] <span class="op">=</span> opponent_totals[<span class="st">"BLK"</span>] <span class="op">-</span> games[<span class="st">"BLK"</span>]</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    games[<span class="st">"PFD"</span>] <span class="op">=</span> opponent_totals[<span class="st">"PF"</span>] <span class="op">-</span> games[<span class="st">"PF"</span>]</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Wins come directly from the game result column.</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    games[<span class="st">"WIN"</span>] <span class="op">=</span> games[<span class="st">"WL"</span>].eq(<span class="st">"W"</span>).astype(<span class="bu">int</span>)</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    team_columns <span class="op">=</span> [<span class="st">"SEASON"</span>, <span class="st">"SEASON_TYPE"</span>, <span class="st">"TEAM_ID"</span>, <span class="st">"TEAM_ABBREVIATION"</span>, <span class="st">"TEAM_NAME"</span>]</span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    stats_to_sum <span class="op">=</span> [</span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        <span class="st">"MIN"</span>, <span class="st">"FGM"</span>, <span class="st">"FGA"</span>, <span class="st">"FG3M"</span>, <span class="st">"FG3A"</span>, <span class="st">"FTM"</span>, <span class="st">"FTA"</span>,</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        <span class="st">"OREB"</span>, <span class="st">"DREB"</span>, <span class="st">"REB"</span>, <span class="st">"AST"</span>, <span class="st">"STL"</span>, <span class="st">"BLK"</span>, <span class="st">"BLKA"</span>,</span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>        <span class="st">"TOV"</span>, <span class="st">"PF"</span>, <span class="st">"PFD"</span>, <span class="st">"PTS"</span>, <span class="st">"PLUS_MINUS"</span>,</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    record <span class="op">=</span> games.groupby(team_columns, as_index<span class="op">=</span><span class="va">False</span>).agg(</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>        GP<span class="op">=</span>(<span class="st">"GAME_ID"</span>, <span class="st">"count"</span>),</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>        W<span class="op">=</span>(<span class="st">"WIN"</span>, <span class="st">"sum"</span>),</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    totals <span class="op">=</span> games.groupby(team_columns, as_index<span class="op">=</span><span class="va">False</span>)[stats_to_sum].<span class="bu">sum</span>()</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    summary <span class="op">=</span> record.merge(totals, on<span class="op">=</span>team_columns)</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rebuild the summary stats from the game rows.</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"L"</span>] <span class="op">=</span> summary[<span class="st">"GP"</span>] <span class="op">-</span> summary[<span class="st">"W"</span>]</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"W_PCT"</span>] <span class="op">=</span> summary[<span class="st">"W"</span>] <span class="op">/</span> summary[<span class="st">"GP"</span>]</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"FG_PCT"</span>] <span class="op">=</span> summary[<span class="st">"FGM"</span>] <span class="op">/</span> summary[<span class="st">"FGA"</span>]</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"FG3_PCT"</span>] <span class="op">=</span> summary[<span class="st">"FG3M"</span>] <span class="op">/</span> summary[<span class="st">"FG3A"</span>]</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"FT_PCT"</span>] <span class="op">=</span> summary[<span class="st">"FTM"</span>] <span class="op">/</span> summary[<span class="st">"FTA"</span>]</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>    per_game_cols <span class="op">=</span> [</span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FGA"</span>, <span class="st">"FG3A"</span>, <span class="st">"REB"</span>, <span class="st">"AST"</span>, <span class="st">"STL"</span>, <span class="st">"BLK"</span>, <span class="st">"BLKA"</span>,</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TOV"</span>, <span class="st">"PF"</span>, <span class="st">"PFD"</span>, <span class="st">"PTS"</span>, <span class="st">"PLUS_MINUS"</span>,</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OREB"</span>, <span class="st">"DREB"</span>, <span class="st">"FGM"</span>, <span class="st">"FG3M"</span>, <span class="st">"FTM"</span>, <span class="st">"FTA"</span>,</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> per_game_cols:</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>        summary[<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_PG"</span>] <span class="op">=</span> summary[col] <span class="op">/</span> summary[<span class="st">"GP"</span>]</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> summary</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>df_regular_season <span class="op">=</span> load_or_fetch(</span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>    files[<span class="st">"regular_season"</span>],</span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span>: fetch_games(<span class="st">"Regular Season"</span>),</span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>df_playoffs <span class="op">=</span> load_or_fetch(</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>    files[<span class="st">"playoffs"</span>],</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span>: fetch_games(<span class="st">"Playoffs"</span>),</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Regular-season team-game rows:"</span>, <span class="bu">len</span>(df_regular_season))</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Playoff team-game rows:"</span>, <span class="bu">len</span>(df_playoffs))</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>df_model_source <span class="op">=</span> summarize_team_seasons(df_regular_season)</span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>df_playoffs_model_source <span class="op">=</span> summarize_team_seasons(df_playoffs)</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Regular-season team-season cols:</span><span class="ch">\n</span><span class="st">"</span>, df_model_source.columns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gets one row per team-game from NBA.com for each season.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fetch_games(season_type):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    all_seasons <span class="op">=</span> []</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> season <span class="kw">in</span> seasons:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Fetching </span><span class="sc">{</span>season<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>season_type<span class="sc">}</span><span class="ss"> games..."</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        games <span class="op">=</span> leaguegamelog.LeagueGameLog(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            player_or_team_abbreviation<span class="op">=</span><span class="st">"T"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            season<span class="op">=</span>season,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            season_type_all_star<span class="op">=</span>season_type,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            timeout<span class="op">=</span><span class="dv">60</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        ).get_data_frames()[<span class="dv">0</span>]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        games[<span class="st">"SEASON"</span>] <span class="op">=</span> season</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        games[<span class="st">"SEASON_TYPE"</span>] <span class="op">=</span> season_type</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        all_seasons.append(games)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="dv">1</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.concat(all_seasons, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Uses the local CSV if it exists; otherwise fetches the data once and saves it.</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_or_fetch(path, fetch_fn):</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> path.exists():</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Loading local file: </span><span class="sc">{</span>path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pd.read_csv(path)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> fetch_fn()</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    data.to_csv(path, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Turns one row per team-game into one row per team-season.</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarize_team_seasons(games):</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    games <span class="op">=</span> games.copy()</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A team's blocks against are the opponent's blocks in the same game.</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    opponent_totals <span class="op">=</span> games.groupby(<span class="st">"GAME_ID"</span>)[[<span class="st">"BLK"</span>, <span class="st">"PF"</span>]].transform(<span class="st">"sum"</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    games[<span class="st">"BLKA"</span>] <span class="op">=</span> opponent_totals[<span class="st">"BLK"</span>] <span class="op">-</span> games[<span class="st">"BLK"</span>]</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    games[<span class="st">"PFD"</span>] <span class="op">=</span> opponent_totals[<span class="st">"PF"</span>] <span class="op">-</span> games[<span class="st">"PF"</span>]</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Wins come directly from the game result column.</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    games[<span class="st">"WIN"</span>] <span class="op">=</span> games[<span class="st">"WL"</span>].eq(<span class="st">"W"</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    team_columns <span class="op">=</span> [<span class="st">"SEASON"</span>, <span class="st">"SEASON_TYPE"</span>, <span class="st">"TEAM_ID"</span>, <span class="st">"TEAM_ABBREVIATION"</span>, <span class="st">"TEAM_NAME"</span>]</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    stats_to_sum <span class="op">=</span> [</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>        <span class="st">"MIN"</span>, <span class="st">"FGM"</span>, <span class="st">"FGA"</span>, <span class="st">"FG3M"</span>, <span class="st">"FG3A"</span>, <span class="st">"FTM"</span>, <span class="st">"FTA"</span>,</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        <span class="st">"OREB"</span>, <span class="st">"DREB"</span>, <span class="st">"REB"</span>, <span class="st">"AST"</span>, <span class="st">"STL"</span>, <span class="st">"BLK"</span>, <span class="st">"BLKA"</span>,</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>        <span class="st">"TOV"</span>, <span class="st">"PF"</span>, <span class="st">"PFD"</span>, <span class="st">"PTS"</span>, <span class="st">"PLUS_MINUS"</span>,</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    record <span class="op">=</span> games.groupby(team_columns, as_index<span class="op">=</span><span class="va">False</span>).agg(</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>        GP<span class="op">=</span>(<span class="st">"GAME_ID"</span>, <span class="st">"count"</span>),</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>        W<span class="op">=</span>(<span class="st">"WIN"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    totals <span class="op">=</span> games.groupby(team_columns, as_index<span class="op">=</span><span class="va">False</span>)[stats_to_sum].<span class="bu">sum</span>()</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    summary <span class="op">=</span> record.merge(totals, on<span class="op">=</span>team_columns)</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rebuild the summary stats from the game rows.</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"L"</span>] <span class="op">=</span> summary[<span class="st">"GP"</span>] <span class="op">-</span> summary[<span class="st">"W"</span>]</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"W_PCT"</span>] <span class="op">=</span> summary[<span class="st">"W"</span>] <span class="op">/</span> summary[<span class="st">"GP"</span>]</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"FG_PCT"</span>] <span class="op">=</span> summary[<span class="st">"FGM"</span>] <span class="op">/</span> summary[<span class="st">"FGA"</span>]</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"FG3_PCT"</span>] <span class="op">=</span> summary[<span class="st">"FG3M"</span>] <span class="op">/</span> summary[<span class="st">"FG3A"</span>]</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>    summary[<span class="st">"FT_PCT"</span>] <span class="op">=</span> summary[<span class="st">"FTM"</span>] <span class="op">/</span> summary[<span class="st">"FTA"</span>]</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>    per_game_cols <span class="op">=</span> [</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FGA"</span>, <span class="st">"FG3A"</span>, <span class="st">"REB"</span>, <span class="st">"AST"</span>, <span class="st">"STL"</span>, <span class="st">"BLK"</span>, <span class="st">"BLKA"</span>,</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>    <span class="st">"TOV"</span>, <span class="st">"PF"</span>, <span class="st">"PFD"</span>, <span class="st">"PTS"</span>, <span class="st">"PLUS_MINUS"</span>,</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OREB"</span>, <span class="st">"DREB"</span>, <span class="st">"FGM"</span>, <span class="st">"FG3M"</span>, <span class="st">"FTM"</span>, <span class="st">"FTA"</span>,</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> per_game_cols:</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>        summary[<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_PG"</span>] <span class="op">=</span> summary[col] <span class="op">/</span> summary[<span class="st">"GP"</span>]</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> summary</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>df_regular_season <span class="op">=</span> load_or_fetch(</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>    files[<span class="st">"regular_season"</span>],</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span>: fetch_games(<span class="st">"Regular Season"</span>),</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>df_playoffs <span class="op">=</span> load_or_fetch(</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>    files[<span class="st">"playoffs"</span>],</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span>: fetch_games(<span class="st">"Playoffs"</span>),</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Regular-season team-game rows:"</span>, <span class="bu">len</span>(df_regular_season))</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Playoff team-game rows:"</span>, <span class="bu">len</span>(df_playoffs))</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>df_model_source <span class="op">=</span> summarize_team_seasons(df_regular_season)</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>df_playoffs_model_source <span class="op">=</span> summarize_team_seasons(df_playoffs)</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Regular-season team-season cols:</span><span class="ch">\n</span><span class="st">"</span>, df_model_source.columns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Loading local file: data/nba/nba_team_games_regular_season.csv
 Loading local file: data/nba/nba_team_games_playoffs.csv
@@ -350,22 +357,22 @@ Regular-season team-season cols:
 </div>
 </div>
 <p>Let’s clean up the regular season dataset by defining only what the model should see.</p>
-<div id="model-data-readable" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-18T16:50:24.888745Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-18T16:50:24.888673Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-18T16:50:24.891631Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-18T16:50:24.891279Z&quot;}}" data-execution_count="22">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> <span class="st">"W_PCT"</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># These columns either identify the team, are the answer, or are too directly tied to the answer.</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>model_features <span class="op">=</span> [</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FGA_PG"</span>, <span class="st">"FG3A_PG"</span>, <span class="st">"FTA_PG"</span>, <span class="st">"OREB_PG"</span>, <span class="st">"DREB_PG"</span>, <span class="st">"AST_PG"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"STL_PG"</span>, <span class="st">"BLK_PG"</span>, <span class="st">"BLKA_PG"</span>, <span class="st">"TOV_PG"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FG_PCT"</span>, <span class="st">"FG3_PCT"</span>, <span class="st">"FT_PCT"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_model_source[target]</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df_model_source[model_features]</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>df_model <span class="op">=</span> pd.concat([y, X], axis<span class="op">=</span><span class="dv">1</span>).dropna()</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Features used by the model:"</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">list</span>(X.columns))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="model-data-readable" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-18T16:50:24.888745Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-18T16:50:24.888673Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-18T16:50:24.891631Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-18T16:50:24.891279Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> <span class="st">"W_PCT"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># These columns either identify the team, are the answer, or are too directly tied to the answer.</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>model_features <span class="op">=</span> [</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FGA_PG"</span>, <span class="st">"FG3A_PG"</span>, <span class="st">"FTA_PG"</span>, <span class="st">"OREB_PG"</span>, <span class="st">"DREB_PG"</span>, <span class="st">"AST_PG"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"STL_PG"</span>, <span class="st">"BLK_PG"</span>, <span class="st">"BLKA_PG"</span>, <span class="st">"TOV_PG"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FG_PCT"</span>, <span class="st">"FG3_PCT"</span>, <span class="st">"FT_PCT"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_model_source[target]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df_model_source[model_features]</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>df_model <span class="op">=</span> pd.concat([y, X], axis<span class="op">=</span><span class="dv">1</span>).dropna()</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Features used by the model:"</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">list</span>(X.columns))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Features used by the model:
 ['FGA_PG', 'FG3A_PG', 'FTA_PG', 'OREB_PG', 'DREB_PG', 'AST_PG', 'STL_PG', 'BLK_PG', 'BLKA_PG', 'TOV_PG', 'FG_PCT', 'FG3_PCT', 'FT_PCT']</code></pre>
@@ -374,19 +381,19 @@ Regular-season team-season cols:
 <p>Now, we have defined that the regression will use per-game shooting volume, rebounding, passing, defensive activity, turnovers, and shooting efficiency to estimate team win percentage.</p>
 <p>Next, we will build the model.</p>
 <div id="train-model-readable" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-06-18T16:50:24.892709Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-06-18T16:50:24.892636Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-06-18T16:50:24.993975Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-06-18T16:50:24.993587Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_model[<span class="st">"W_PCT"</span>]</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df_model.drop(columns<span class="op">=</span>[<span class="st">"W_PCT"</span>])</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ElasticNetCV(</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    l1_ratio<span class="op">=</span>[<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>],</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span><span class="dv">5</span>,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">100000</span>,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>model.fit(X_scaled, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_model[<span class="st">"W_PCT"</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df_model.drop(columns<span class="op">=</span>[<span class="st">"W_PCT"</span>])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ElasticNetCV(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    l1_ratio<span class="op">=</span>[<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>],</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">100000</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>model.fit(X_scaled, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>I want to bring attention to <code>X_scaled</code> - this step scales the metrics to be standardized versions of themselves.</p>
 <p>Elastic Net regression is sensitive to variable size, and the metrics live on different scales: <code>FG-PCT</code> could be around <code>0.4</code> and <code>FGA-PG</code> could be <code>90</code>.</p>
@@ -394,27 +401,27 @@ Regular-season team-season cols:
 <hr>
 <p>Now that the regression has been run, let’s now identify the exact features and their coefficients.</p>
 <div id="1344e336" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>raw_coefficients <span class="op">=</span> model.coef_ <span class="op">/</span> scaler.scale_</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>raw_intercept <span class="op">=</span> model.intercept_ <span class="op">-</span> (raw_coefficients <span class="op">*</span> scaler.mean_).<span class="bu">sum</span>()</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>formula_df <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Feature"</span>: X.columns,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Raw_Coefficient"</span>: raw_coefficients,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>formula_df[<span class="st">"Win_Pct_Points_Per_Unit"</span>] <span class="op">=</span> formula_df[<span class="st">"Raw_Coefficient"</span>] <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>formula_df[<span class="st">"Abs_Coeff"</span>] <span class="op">=</span> formula_df[<span class="st">"Raw_Coefficient"</span>].<span class="bu">abs</span>()</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>important_formula_terms <span class="op">=</span> (</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    formula_df[formula_df[<span class="st">"Raw_Coefficient"</span>] <span class="op">!=</span> <span class="dv">0</span>]</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">"Abs_Coeff"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>important_formula_terms[<span class="st">"Raw_Coefficient"</span>] <span class="op">=</span> important_formula_terms[<span class="st">"Raw_Coefficient"</span>].<span class="bu">round</span>(<span class="dv">4</span>)</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Regression using regular season data ---"</span>)</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Formula intercept:"</span>, <span class="bu">round</span>(raw_intercept, <span class="dv">4</span>))</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(important_formula_terms[[<span class="st">"Feature"</span>, <span class="st">"Raw_Coefficient"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>raw_coefficients <span class="op">=</span> model.coef_ <span class="op">/</span> scaler.scale_</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>raw_intercept <span class="op">=</span> model.intercept_ <span class="op">-</span> (raw_coefficients <span class="op">*</span> scaler.mean_).<span class="bu">sum</span>()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>formula_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Feature"</span>: X.columns,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Raw_Coefficient"</span>: raw_coefficients,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>formula_df[<span class="st">"Win_Pct_Points_Per_Unit"</span>] <span class="op">=</span> formula_df[<span class="st">"Raw_Coefficient"</span>] <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>formula_df[<span class="st">"Abs_Coeff"</span>] <span class="op">=</span> formula_df[<span class="st">"Raw_Coefficient"</span>].<span class="bu">abs</span>()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>important_formula_terms <span class="op">=</span> (</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    formula_df[formula_df[<span class="st">"Raw_Coefficient"</span>] <span class="op">!=</span> <span class="dv">0</span>]</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">"Abs_Coeff"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>important_formula_terms[<span class="st">"Raw_Coefficient"</span>] <span class="op">=</span> important_formula_terms[<span class="st">"Raw_Coefficient"</span>].<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Regression using regular season data ---"</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Formula intercept:"</span>, <span class="bu">round</span>(raw_intercept, <span class="dv">4</span>))</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(important_formula_terms[[<span class="st">"Feature"</span>, <span class="st">"Raw_Coefficient"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>--- Regression using regular season data ---
 Formula intercept: -1.9543
@@ -436,54 +443,54 @@ Formula intercept: -1.9543
 </div>
 <p>Onto the final step; let’s repeat the experiment with playoffs data.</p>
 <div id="2e71a1e8" class="cell" data-execution_count="34">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> <span class="st">"W_PCT"</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># These columns either identify the team, are the answer, or are too directly tied to the answer.</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>model_features <span class="op">=</span> [</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FGA_PG"</span>, <span class="st">"FG3A_PG"</span>, <span class="st">"FTA_PG"</span>, <span class="st">"OREB_PG"</span>, <span class="st">"DREB_PG"</span>, <span class="st">"AST_PG"</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"STL_PG"</span>, <span class="st">"BLK_PG"</span>, <span class="st">"BLKA_PG"</span>, <span class="st">"TOV_PG"</span>,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FG_PCT"</span>, <span class="st">"FG3_PCT"</span>, <span class="st">"FT_PCT"</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_playoffs_model_source[target]</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df_playoffs_model_source[model_features]</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>df_model <span class="op">=</span> pd.concat([y, X], axis<span class="op">=</span><span class="dv">1</span>).dropna()</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_model[<span class="st">"W_PCT"</span>]</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df_model.drop(columns<span class="op">=</span>[<span class="st">"W_PCT"</span>])</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ElasticNetCV(</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    l1_ratio<span class="op">=</span>[<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>],</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span><span class="dv">5</span>,</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">100000</span>,</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>model.fit(X_scaled, y)</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>raw_coefficients <span class="op">=</span> model.coef_ <span class="op">/</span> scaler.scale_</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>raw_intercept <span class="op">=</span> model.intercept_ <span class="op">-</span> (raw_coefficients <span class="op">*</span> scaler.mean_).<span class="bu">sum</span>()</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>formula_df <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Feature"</span>: X.columns,</span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Raw_Coefficient"</span>: raw_coefficients,</span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>formula_df[<span class="st">"Win_Pct_Points_Per_Unit"</span>] <span class="op">=</span> formula_df[<span class="st">"Raw_Coefficient"</span>] <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>formula_df[<span class="st">"Abs_Coeff"</span>] <span class="op">=</span> formula_df[<span class="st">"Raw_Coefficient"</span>].<span class="bu">abs</span>()</span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>important_formula_terms <span class="op">=</span> (</span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    formula_df[formula_df[<span class="st">"Raw_Coefficient"</span>] <span class="op">!=</span> <span class="dv">0</span>]</span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">"Abs_Coeff"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>important_formula_terms[<span class="st">"Raw_Coefficient"</span>] <span class="op">=</span> important_formula_terms[<span class="st">"Raw_Coefficient"</span>].<span class="bu">round</span>(<span class="dv">4</span>)</span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Regression using playoffs data ---"</span>)</span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Formula intercept:"</span>, <span class="bu">round</span>(raw_intercept, <span class="dv">4</span>))</span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(important_formula_terms[[<span class="st">"Feature"</span>, <span class="st">"Raw_Coefficient"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> <span class="st">"W_PCT"</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># These columns either identify the team, are the answer, or are too directly tied to the answer.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>model_features <span class="op">=</span> [</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FGA_PG"</span>, <span class="st">"FG3A_PG"</span>, <span class="st">"FTA_PG"</span>, <span class="st">"OREB_PG"</span>, <span class="st">"DREB_PG"</span>, <span class="st">"AST_PG"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"STL_PG"</span>, <span class="st">"BLK_PG"</span>, <span class="st">"BLKA_PG"</span>, <span class="st">"TOV_PG"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FG_PCT"</span>, <span class="st">"FG3_PCT"</span>, <span class="st">"FT_PCT"</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_playoffs_model_source[target]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df_playoffs_model_source[model_features]</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>df_model <span class="op">=</span> pd.concat([y, X], axis<span class="op">=</span><span class="dv">1</span>).dropna()</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_model[<span class="st">"W_PCT"</span>]</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df_model.drop(columns<span class="op">=</span>[<span class="st">"W_PCT"</span>])</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ElasticNetCV(</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    l1_ratio<span class="op">=</span>[<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>],</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">100000</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>model.fit(X_scaled, y)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>raw_coefficients <span class="op">=</span> model.coef_ <span class="op">/</span> scaler.scale_</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>raw_intercept <span class="op">=</span> model.intercept_ <span class="op">-</span> (raw_coefficients <span class="op">*</span> scaler.mean_).<span class="bu">sum</span>()</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>formula_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Feature"</span>: X.columns,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Raw_Coefficient"</span>: raw_coefficients,</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>formula_df[<span class="st">"Win_Pct_Points_Per_Unit"</span>] <span class="op">=</span> formula_df[<span class="st">"Raw_Coefficient"</span>] <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>formula_df[<span class="st">"Abs_Coeff"</span>] <span class="op">=</span> formula_df[<span class="st">"Raw_Coefficient"</span>].<span class="bu">abs</span>()</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>important_formula_terms <span class="op">=</span> (</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    formula_df[formula_df[<span class="st">"Raw_Coefficient"</span>] <span class="op">!=</span> <span class="dv">0</span>]</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    .sort_values(<span class="st">"Abs_Coeff"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>important_formula_terms[<span class="st">"Raw_Coefficient"</span>] <span class="op">=</span> important_formula_terms[<span class="st">"Raw_Coefficient"</span>].<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Regression using playoffs data ---"</span>)</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Formula intercept:"</span>, <span class="bu">round</span>(raw_intercept, <span class="dv">4</span>))</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(important_formula_terms[[<span class="st">"Feature"</span>, <span class="st">"Raw_Coefficient"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>--- Regression using playoffs data ---
 Formula intercept: -1.581
@@ -506,7 +513,12 @@ Formula intercept: -1.581
 <section id="findings" class="level2">
 <h2 class="anchored" data-anchor-id="findings">Findings</h2>
 <p>Across both regular season data and playoffs data, the biggest finding is that <strong><em>shooting efficiency matters most</em></strong>. <code>FG_PCT</code> and <code>FG3_PCT</code> are the strongest factors in determining win rate.</p>
-<p>The per-game stats also make a lot of sense: - More steals -&gt; higher expected win percentage. - More turnovers -&gt; lower expected win percentage. - More offensive/defensive rebounds -&gt; higher expected win percentage.</p>
+<p>The per-game stats also make a lot of sense:</p>
+<ul>
+<li><p>More steals -&gt; higher expected win percentage.</p></li>
+<li><p>More turnovers -&gt; lower expected win percentage.</p></li>
+<li><p>More offensive/defensive rebounds -&gt; higher expected win percentage.</p></li>
+</ul>
 <p>The main difference is that <strong><em>shooting efficiency matters much more in the regular-season model</em></strong>.</p>
 <pre><code>FG_PCT
 Regular season: 4.0053
@@ -524,7 +536,11 @@ BLKA_PG
 Regular season: -0.0313
 Playoffs: +0.0005</code></pre>
 <p>Getting blocked hurts about <em>3x more in the regular season</em> while <em>barely registering as a factor during the playoffs</em>.</p>
-<p>There are a few assumptions we relied on to derive these: - Historical box score stats contain useful information to determine win probability. - The regression methodology of Elastic Net regularization is effective at identifying the most relevant variables that determine win probability.</p>
+<p>There are a few assumptions we relied on to derive these:</p>
+<ul>
+<li><p>Historical box score stats contain useful information to determine win probability.</p></li>
+<li><p>The regression methodology of Elastic Net regularization is effective at identifying the most relevant variables that determine win probability.</p></li>
+</ul>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
