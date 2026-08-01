@@ -195,6 +195,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="methodology" class="level2">
 <h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
 <p>This study asks two questions. 1. How did Bitcoin perform compared to the S&amp;P 500 over the same period using equal periodic dollar-cost averaging? 2. Does the choice of accumulation engine — DCA, value averaging, or buy-the-dip — change the outcome when each engine is applied to both assets?</p>
+<p>This study asks two questions.</p>
+<ol type="1">
+<li><p>How did Bitcoin perform compared to the S&amp;P 500 over the same period using equal periodic dollar-cost averaging?</p></li>
+<li><p>Does the choice of accumulation engine — DCA, value averaging, or buy-the-dip — change the outcome when each engine is applied to both assets?</p></li>
+</ol>
 <p>The backtest runs the same dollar contribution targets on BTC-USD and SPY. It compares ending value, cash required, capital efficiency, and drawdown. BTC trades every day, while SPY contributes on its valid market-trading days. When a calendar purchase date is not a trading day for SPY, the purchase occurs on the first available observation on or after that date.</p>
 <p>This is a historical experiment, not a forecast or personal investment advice. The baseline excludes fees, spreads, slippage, and taxes. Every strategy is long-only: it can buy the tested asset, but never sells it.</p>
 <p>The analysis uses BTC-USD daily candles from Coinbase and adjusted SPY daily prices from Yahoo Finance between July 3, 2021 and July 2, 2026.</p>
@@ -299,9 +304,9 @@ SPY: 1,254 rows, 2021-07-06 through 2026-07-02, duplicates=0</code></pre>
 <section id="configurations" class="level3">
 <h3 class="anchored" data-anchor-id="configurations">Configurations</h3>
 <ul>
-<li><strong>DCA</strong>: buy $100 at month-end, regardless of the price. This means partial buys for BTC and SPY are enabled.</li>
-<li><strong>Value averaging</strong>: a target path that grows by $100 every month-end.</li>
-<li><strong>Buy-the-dip</strong>: buy $100 at month-end after a 10% one-month decline.</li>
+<li><strong>DCA</strong>: buy <code>$100</code> at month-end, regardless of the price. This means partial buys for BTC and SPY are enabled.</li>
+<li><strong>Value averaging</strong>: a target path that grows by <code>$100</code> every month-end.</li>
+<li><strong>Buy-the-dip</strong>: buy <code>$100</code> at month-end after a 10% one-month decline.</li>
 </ul>
 <p>The same dollar targets are applied to both BTC and SPY. For SPY, purchases execute on the first available trading day on or after the calendar target.</p>
 <div id="92684d40" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;ExecuteTime&quot;,&quot;value&quot;:{&quot;end_time&quot;:&quot;2026-08-01T16:35:13.690538Z&quot;,&quot;start_time&quot;:&quot;2026-08-01T16:35:13.656411Z&quot;}}" data-execution_count="20">
@@ -510,7 +515,7 @@ SPY: 1,254 rows, 2021-07-06 through 2026-07-02, duplicates=0</code></pre>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<p>The fairest comparison is the shared $100 month-end DCA baseline: over this study window, SPY finished with the higher portfolio value and a much smaller drawdown than BTC. The DCA rows answer the direct BTC-versus-SPY accumulation question.</p>
+<p>The fairest comparison is the shared <code>$100</code> month-end DCA baseline: over this study window, SPY finished with the higher portfolio value and a much smaller drawdown than BTC. The DCA rows answer the direct BTC-versus-SPY accumulation question.</p>
 <p>The value averaging results look more interesting: BTC looked more attractive because it produced a higher return on the cash actually invested, but it also deployed a different amount of capital and experienced a deeper drawdown.</p>
 <p>The most direct conclusion is that SPY was the more consistent accumulation asset in this sample, while BTC offered greater upside potential only through a more volatile and capital-sensitive path.</p>
 </section>
