@@ -1,5 +1,0 @@
-# Articles
-
-## Basketball
-
-- [What makes a basketball team win?](nba-scoring.ipynb)

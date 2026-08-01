@@ -1,14 +1,19 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - website/index.ipynb
+    - website/articles.qmd
+    - website/nba-scoring.ipynb
+    - website/btc-accumulation.ipynb
 
 website:
   title: "data-articles"
   navbar:
     left:
-      - href: index.ipynb
+      - href: website/index.ipynb
         text: Home
-      - href: articles.qmd
+      - href: website/articles.qmd
         text: Articles
 
 format:
@@ -16,8 +21,6 @@ format:
     theme:
       - cosmo
       - brand
-    css: styles.css
+    css: website/styles.css
     toc: true
-
-
 

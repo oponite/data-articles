@@ -1,0 +1,9 @@
+# Articles
+
+## Basketball
+
+- [What makes a basketball team win?](nba-scoring.ipynb)
+
+## Finance
+
+- [Why should you accumulate BTC?](btc-accumulation.ipynb)
