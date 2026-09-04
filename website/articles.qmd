@@ -4,6 +4,10 @@ toc: false
 
 # Articles
 
+## Math
+
+- [The Brier Score: How accurate are probability forecasts?](brier-score-btc.ipynb)
+
 ## Basketball
 
 - [What makes a basketball team win?](nba-scoring.ipynb)
@@ -11,4 +15,3 @@ toc: false
 ## Finance
 
 - [Why should you accumulate BTC?](btc-accumulation.ipynb)
-- [The Brier Score: How accurate are probability forecasts?](brier-score-btc.ipynb)
