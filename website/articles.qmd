@@ -11,4 +11,4 @@ toc: false
 ## Finance
 
 - [Why should you accumulate BTC?](btc-accumulation.ipynb)
-- [How accurate are probability forecasts? The Brier Score](brier-score-btc.ipynb)
+- [The Brier Score: How accurate are probability forecasts?](brier-score-btc.ipynb)
