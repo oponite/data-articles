@@ -6,6 +6,7 @@ project:
     - website/articles.qmd
     - website/nba-scoring.ipynb
     - website/btc-accumulation.ipynb
+    - website/brier-score-btc.ipynb
 
 website:
   title: "data-articles"
@@ -23,4 +24,3 @@ format:
       - brand
     css: website/styles.css
     toc: true
-
