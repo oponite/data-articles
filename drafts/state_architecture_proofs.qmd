@@ -1,0 +1,229 @@
+---
+title: "STATE architecture from mathematical proofs"
+format: html
+---
+
+## Introduction
+
+This article extracts the architectural constraints on `STATE` and `STATE_DIST` that follow directly from their mathematical definitions and proofs. No implementation details are assumed; only domain invariants, operation signatures, and theorems.
+
+## 1. Domains
+
+### 1.1 STATE
+
+Let the computational basis be ordered $(|0\rangle,|1\rangle)$. The domain of concrete `STATE` values is
+
+$$
+\mathcal S
+=
+\left\{
+\rho\in\mathcal L(\mathbb C^2)
+\;\middle|\;
+\rho=\rho^\dagger,\;
+\rho\succeq0,\;
+\operatorname{Tr}(\rho)=1
+\right\}.
+$$
+
+Every $\rho\in\mathcal S$ has the canonical representation
+
+$$
+\rho=
+\begin{pmatrix}
+1-p & c \\
+c^* & p
+\end{pmatrix},
+$$
+
+where
+
+$$
+0\le p\le1,\qquad c\in\mathbb C,\qquad |c|^2\le p(1-p).
+$$
+
+Here $p=\rho_{11}$ and $c=\rho_{01}$. For $0<p<1$,
+
+$$
+d=\frac{c}{\sqrt{p(1-p)}},\qquad |d|\le1.
+$$
+
+At boundaries $p\in\{0,1\}$ positivity forces $c=0$ and by convention $d=0$.
+
+*Invariant*: $(p,c)$ satisfying the three inequalities above is necessary and sufficient for $\rho\in\mathcal S$.
+
+### 1.2 STATE_DIST
+
+$$
+\operatorname{STATE_DIST}=\operatorname{Dist}(\mathcal S).
+$$
+
+For $\rho\in\mathcal S$, $\delta_\rho\in\operatorname{Dist}(\mathcal S)$ embeds a concrete state as a degenerate distribution.
+
+### 1.3 Core signatures
+
+$$
+\operatorname{MEASURE}:\mathcal S\rightarrow\operatorname{Dist}(\{0,1\}),
+$$
+
+$$
+\operatorname{TRANSFORM}_\Phi:\mathcal S\rightarrow\mathcal S,
+$$
+
+$$
+\operatorname{APPEND}:\mathcal S\times\mathcal S\rightarrow\operatorname{STATE_DIST}.
+$$
+
+Lifted forms on `STATE_DIST` are defined via pushforward and independent mixture.
+
+## 2. MEASURE
+
+For $\rho$ with canonical form above,
+
+$$
+\operatorname{MEASURE}(\rho)=\operatorname{Bernoulli}(p),
+$$
+
+with $P(1)=p$, $P(0)=1-p$.
+
+Properties:
+
+* *Well-definedness.* For every $\rho\in\mathcal S$, $0\le p\le1$, hence $p$ and $1-p$ are nonnegative and sum to $1$, defining a Bernoulli distribution.
+
+* *State preservation.* `MEASURE` reads $p$ only; it performs no state-producing step, so input $\rho$ is unchanged.
+
+* *Internal-parameter independence.* If $\rho_1,\rho_2\in\mathcal S$ share the same $p$, then $\operatorname{MEASURE}(\rho_1)=\operatorname{MEASURE}(\rho_2)$ regardless of $c_1,c_2$.
+
+Architectural consequence: measurement outcome depends solely on the diagonal probability $p$. Off-diagonal $c$ is invisible to computational-basis measurement. `MEASURE` is read-only.
+
+Basis-aware generalisation:
+
+$$
+q_{\mathrm{computational}}(\rho)=p,\quad
+q_x(\rho)=\tfrac12+\operatorname{Re}(c),\quad
+q_y(\rho)=\tfrac12-\operatorname{Im}(c).
+$$
+
+Measurement remains read-only.
+
+## 3. TRANSFORM
+
+A valid transform is a deterministic Borel-measurable endofunction
+
+$$
+\Phi:\mathcal S\rightarrow\mathcal S,
+$$
+
+with codomain obligation: for all $\rho\in\mathcal S$, $\Phi(\rho)\in\mathcal S$, i.e.
+
+$$
+0\le p'\le1,\qquad |c'|^2\le p'(1-p').
+$$
+
+Properties:
+
+* *Closure.* If $\Phi$ is valid, $\Phi(\rho)\in\mathcal S$ for all $\rho\in\mathcal S$.
+
+* *Closure under composition.* If $\Phi,\Psi$ are valid, $\Psi\circ\Phi$ is valid.
+
+* *Associativity of composition.*
+
+$$
+\Theta\circ(\Psi\circ\Phi)=(\Theta\circ\Psi)\circ\Phi.
+$$
+
+* *Identity.* $I(\rho)=\rho$ satisfies $I\circ\Phi=\Phi\circ I=\Phi$.
+
+Architectural consequence: valid transforms form a monoid under composition, not necessarily a group. Individual transforms need not be invertible. Measurability and domain preservation are the only architectural requirements.
+
+## 4. APPEND
+
+For ordinary inputs $A,B\in\mathcal S$ with probabilities $p_A,p_B$,
+
+$$
+p_C = p_A+p_B-p_Ap_B = 1-(1-p_A)(1-p_B),
+$$
+
+$$
+m_C = \frac{d_A+d_B}{2},\qquad
+\sigma_C = \frac{|d_A-d_B|}{2}.
+$$
+
+For $0<p_C<1$ and $\sigma_C>0$, the internal disposition distribution is
+
+$$
+f_C(d)=\frac{1}{Z(m_C,\sigma_C)}\exp\!\left(-\frac{|d-m_C|^2}{2\sigma_C^2}\right),\quad d\in\mathbb D,
+$$
+
+with $\mathbb D=\{z\in\mathbb C:|z|\le1\}$ and $Z$ the normalising integral over $\mathbb D$. Degenerate cases:
+
+* $0<p_C<1,\sigma_C=0\Rightarrow d_C=m_C$,
+* $p_C\in\{0,1\}\Rightarrow d_C=0$.
+
+Construct $c_C=d_C\sqrt{p_C(1-p_C)}$ and
+
+$$
+\rho_C=
+\begin{pmatrix}
+1-p_C & c_C\\
+c_C^* & p_C
+\end{pmatrix}.
+$$
+
+Properties:
+
+* *Probability bounds.* $p_A,p_B\in[0,1]\Rightarrow p_C\in[0,1]$.
+
+* *State validity.* $|d_C|\le1$ implies $|c_C|^2\le p_C(1-p_C)$; together with $p_C\in[0,1]$, $\rho_C\in\mathcal S$.
+
+* *Commutativity.* $\operatorname{APPEND}(A,B)=\operatorname{APPEND}(B,A)$; $p_C,m_C,\sigma_C$ are symmetric.
+
+* *Observable associativity.* For three concrete inputs with independence,
+
+$$
+p_{(AB)C}=p_{A(BC)}=1-(1-p_A)(1-p_B)(1-p_C).
+$$
+
+In general $p_{\operatorname{APPEND}}=1-\prod_{i=1}^n(1-p_i)$.
+
+* *Internal non-associativity.* No theorem equates the internal distributions of $\operatorname{APPEND}(\operatorname{APPEND}(A,B),C)$ and $\operatorname{APPEND}(A,\operatorname{APPEND}(B,C))$; binary grouping matters for the internal disposition.
+
+Architectural consequence: observable probability combines via probabilistic OR and is associative and commutative. Internal disposition combines via a mean-variance rule that is order-dependent. `APPEND` returns a `STATE_DIST`, not necessarily a concrete `STATE`.
+
+## 5. Lifting and composition
+
+Embedding $\eta:\mathcal S\to\operatorname{Dist}(\mathcal S)$, $\eta(\rho)=\delta_\rho$.
+
+*Lifted TRANSFORM.* For admissible $\Phi$, pushforward $\Phi_*\mu$ defined by $(\Phi_*\mu)(E)=\mu(\Phi^{-1}(E))$.
+
+*Lifted APPEND.* For $\mu,\nu\in\operatorname{Dist}(\mathcal S)$,
+
+$$
+\lambda(E)=\int\!\!\int K(\rho_A,\rho_B)(E)\,d\mu(\rho_A)d\nu(\rho_B),
+$$
+
+where $K$ is the ordinary `APPEND` kernel. Result remains in $\operatorname{Dist}(\mathcal S)$.
+
+*Lifted MEASURE.* For $\mu\in\operatorname{STATE_DIST}$,
+
+$$
+P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
+$$
+
+Sampling is read-only: $\operatorname{SAMPLE}(\mu)\sim\mu$ does not mutate $\mu$.
+
+## 6. Boundaries and errors
+
+* Invalid construction: $p\notin[0,1]$ or $|c|^2>p(1-p)$ must be rejected.
+* Boundary: $p\in\{0,1\}\Rightarrow c=0$, $d=0$ by convention.
+* Transform output violating invariants is not a valid transform for that input.
+* Core operations are defined only over declared domains; unsupported type combinations are errors.
+
+## 7. Architectural summary
+
+* `STATE` is the Bloch-disk-constrained density operator family parametrised by $(p,c)$ with invariant $|c|^2\le p(1-p)$.
+* Measurement extracts $p$ only; $c$ is latent for computational basis.
+* Transforms are Borel-measurable endofunctions preserving the invariant; they compose into a monoid.
+* `APPEND` merges two states into a distribution over states; observable probability is associative and commutative, internal disposition is not.
+* `STATE_DIST` is the distribution monad over `STATE`; lifting preserves signatures and read-only semantics.
+
+These constraints are consequences of the proofs, not implementation choices.

@@ -1,1 +1,6 @@
-/* css styles */
+/* hide table of contents sidebar */
+#quarto-margin-sidebar { display: none; }
+
+
+
+
