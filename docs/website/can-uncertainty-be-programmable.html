@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Can Uncertainty Be Programmable? – data-articles</title>
+<title>can-uncertainty-be-programmable – data-articles</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -183,270 +183,201 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#a-small-lana-example" id="toc-a-small-lana-example" class="nav-link active" data-scroll-target="#a-small-lana-example">1. A small Lana example</a></li>
-  <li><a href="#the-state-value" id="toc-the-state-value" class="nav-link" data-scroll-target="#the-state-value">2. The <code>STATE</code> value</a></li>
-  <li><a href="#what-measurement-reads" id="toc-what-measurement-reads" class="nav-link" data-scroll-target="#what-measurement-reads">3. What measurement reads</a></li>
-  <li><a href="#transforming-a-state" id="toc-transforming-a-state" class="nav-link" data-scroll-target="#transforming-a-state">4. Transforming a state</a></li>
-  <li><a href="#combining-uncertainty-with-append" id="toc-combining-uncertainty-with-append" class="nav-link" data-scroll-target="#combining-uncertainty-with-append">5. Combining uncertainty with <code>APPEND</code></a></li>
-  <li><a href="#composition-and-lifting" id="toc-composition-and-lifting" class="nav-link" data-scroll-target="#composition-and-lifting">6. Composition and lifting</a></li>
-  <li><a href="#exact-values-distributions-and-samples" id="toc-exact-values-distributions-and-samples" class="nav-link" data-scroll-target="#exact-values-distributions-and-samples">7. Exact values, distributions, and samples</a></li>
-  <li><a href="#the-boundary-of-the-model" id="toc-the-boundary-of-the-model" class="nav-link" data-scroll-target="#the-boundary-of-the-model">8. The boundary of the model</a></li>
-  <li><a href="#the-answer" id="toc-the-answer" class="nav-link" data-scroll-target="#the-answer">9. The answer</a></li>
+  <li><a href="#can-uncertainty-be-programmable" id="toc-can-uncertainty-be-programmable" class="nav-link active" data-scroll-target="#can-uncertainty-be-programmable">Can Uncertainty Be Programmable?</a>
+  <ul class="collapse">
+  <li><a href="#a-different-computation-model" id="toc-a-different-computation-model" class="nav-link" data-scroll-target="#a-different-computation-model">A Different Computation Model</a></li>
+  <li><a href="#ok-cool.-why-though" id="toc-ok-cool.-why-though" class="nav-link" data-scroll-target="#ok-cool.-why-though">OK, Cool. Why though?</a></li>
+  <li><a href="#why-is-this-not-a-javapython-library" id="toc-why-is-this-not-a-javapython-library" class="nav-link" data-scroll-target="#why-is-this-not-a-javapython-library">Why is this not a Java/Python library?</a></li>
+  <li><a href="#cool-idea.-does-it-survive-reality" id="toc-cool-idea.-does-it-survive-reality" class="nav-link" data-scroll-target="#cool-idea.-does-it-survive-reality">Cool idea. Does it survive reality?</a></li>
+  <li><a href="#the-state" id="toc-the-state" class="nav-link" data-scroll-target="#the-state">1. The state</a></li>
+  <li><a href="#measuring-the-state" id="toc-measuring-the-state" class="nav-link" data-scroll-target="#measuring-the-state">2. Measuring the state</a></li>
+  <li><a href="#transforming-the-state" id="toc-transforming-the-state" class="nav-link" data-scroll-target="#transforming-the-state">3. Transforming the state</a></li>
+  <li><a href="#appending-states" id="toc-appending-states" class="nav-link" data-scroll-target="#appending-states">4. Appending states</a></li>
+  <li><a href="#composition-semantics" id="toc-composition-semantics" class="nav-link" data-scroll-target="#composition-semantics">5. Composition semantics</a></li>
+  <li><a href="#boundary-conditions-and-failure-handling" id="toc-boundary-conditions-and-failure-handling" class="nav-link" data-scroll-target="#boundary-conditions-and-failure-handling">6. Boundary conditions and failure handling</a></li>
+  <li><a href="#implementation-obligations" id="toc-implementation-obligations" class="nav-link" data-scroll-target="#implementation-obligations">7. Implementation obligations</a></li>
+  <li><a href="#conclusion-or-why-this-article-answers-the-title-question" id="toc-conclusion-or-why-this-article-answers-the-title-question" class="nav-link" data-scroll-target="#conclusion-or-why-this-article-answers-the-title-question">Conclusion, or why this article answers the title question</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Can Uncertainty Be Programmable?</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
+<section id="can-uncertainty-be-programmable" class="level1">
+<h1>Can Uncertainty Be Programmable?</h1>
+<p>Programming is a recipe: take inputs, apply rules, produce outputs. Mainstream programming languages generally treat uncertainty as application data rather than a fundamental property of values and computation. Specifically, when information is incomplete, a programmer must manually encode what that uncertainty means and how it should propagate.</p>
+<p>What if uncertainty itself became something a program could represent, propagate, reason about, and report?</p>
+<section id="a-different-computation-model" class="level2">
+<h2 class="anchored" data-anchor-id="a-different-computation-model">A Different Computation Model</h2>
+<p><strong>Lana</strong> is a general-purpose programming language built around <strong>the explicit representation of information about modelled values and events</strong>.</p>
+<p>Consider the following:</p>
+<pre class="lana"><code>let risk = possibility([0.4, 0.6]);
 
-
-</header>
-
-
-<p>A weather forecast can say that rain has a 40% chance. A normal program can store <code>0.40</code>.</p>
-<p>This is one way to represent uncertainty: store a probability as a number.</p>
-<p>Lana can store uncertainty as a value and apply rules to it.</p>
-<blockquote class="blockquote">
-<p><strong>Short answer:</strong> Yes. Lana can represent, combine, measure, transform, and sample uncertainty. Each action has a defined limit.</p>
-</blockquote>
-<p>This article explains the uncertainty model in Lana 1.0. The examples use small Python calculations to make the rules visible. The Python code models the rules; it does not replace the Lana runtime.</p>
-<section id="a-small-lana-example" class="level2">
-<h2 class="anchored" data-anchor-id="a-small-lana-example">1. A small Lana example</h2>
-<pre class="lana"><code>state weather = state(p: 0.40, d: 0.20);
-state forecast = state(p: 0.70, d: -0.10);
-let combined = append(weather, forecast);
-let probability = measure combined as probability;
-let sample = sample(combined);</code></pre>
-<p>The two states describe uncertain events. <code>append</code> combines them under an independence assumption. <code>measure</code> asks for the expected computational-basis probability. <code>sample</code> returns one concrete state from the resulting distribution. The original distribution does not change.</p>
+if (risk &gt; 0.5) {
+    approve_loan();
+}</code></pre>
+<p>Imagine a language where risk does not have to collapse to one definite value before the rest of the program can continue. Imagine if that was a runtime guarantee rather than a class or library.</p>
+<p>That’s essentially Lana.</p>
 </section>
-<section id="the-state-value" class="level2">
-<h2 class="anchored" data-anchor-id="the-state-value">2. The <code>STATE</code> value</h2>
-<p>Lana represents one concrete state with a two-by-two complex matrix:</p>
+<section id="ok-cool.-why-though" class="level2">
+<h2 class="anchored" data-anchor-id="ok-cool.-why-though">OK, Cool. Why though?</h2>
+<p>Imagine an automated trading system deciding whether to place an order.</p>
+<pre class="lana"><code>let signal = possibility([0.45, 0.72]);
+
+if (signal &gt; 0.60) {
+    place_order();
+}</code></pre>
+<p>The signal is unresolved: one possible value says <strong>don’t trade</strong>, the other says <strong>trade</strong>.</p>
+<p>Lana can continue calculating with both possibilities, but it will not let that unresolved decision trigger the external <code>place_order()</code> effect.</p>
+<p>In other words, Lana lets you build systems that can <strong>reason with incomplete information without pretending that incomplete information is certainty</strong>.</p>
+</section>
+<section id="why-is-this-not-a-javapython-library" class="level2">
+<h2 class="anchored" data-anchor-id="why-is-this-not-a-javapython-library">Why is this not a Java/Python library?</h2>
+<p>Because when it comes to <em>information-aware programming</em>, Lana cooks harder alone.</p>
+<p>Consider the use case of a bank deciding whether to approve a loan based on dynamic risk metrics. A Python library can wrap uncertainty:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>risk <span class="op">=</span> Uncertain([<span class="fl">0.4</span>, <span class="fl">0.6</span>])</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> risk <span class="op">&gt;</span> <span class="fl">0.5</span>:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    approve_loan()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Python can customize what <code>risk &gt; 0.5</code> returns, but a library cannot redefine the semantics of Python’s <code>if</code> to branch over unresolved alternatives and merge the resulting program states.</p>
+<p>Lana laughs at this problem, as it can make unresolved control flow itself legal:</p>
+<pre class="lana"><code>let risk = possibility([0.4, 0.6]);
+
+if (risk &gt; 0.5) {
+    approve_loan();
+}</code></pre>
+<p>Lana programs can evaluate both pure paths while preventing <code>approve_loan()</code> from executing until the controlling condition is resolved.</p>
+<p>Java is even more awkward, as operators aren’t generally overridable:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Uncertain<span class="op">&lt;</span><span class="bu">Double</span><span class="op">&gt;</span> risk <span class="op">=</span> <span class="fu">uncertain</span><span class="op">(</span><span class="fl">0.4</span><span class="op">,</span> <span class="fl">0.6</span><span class="op">);</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>risk<span class="op">.</span><span class="fu">gt</span><span class="op">(</span><span class="fl">0.5</span><span class="op">).</span><span class="fu">isResolved</span><span class="op">()</span> <span class="op">&amp;&amp;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    risk<span class="op">.</span><span class="fu">gt</span><span class="op">(</span><span class="fl">0.5</span><span class="op">).</span><span class="fu">getValue</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">approveLoan</span><span class="op">();</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Lana makes the same representation far more elegant:</p>
+<pre class="lana"><code>if (risk &gt; 0.5) {
+    approve_loan();
+}</code></pre>
+<p>Java can model an uncertain value. Lana can make uncertainty participate directly in ordinary control flow.</p>
+</section>
+<section id="cool-idea.-does-it-survive-reality" class="level2">
+<h2 class="anchored" data-anchor-id="cool-idea.-does-it-survive-reality">Cool idea. Does it survive reality?</h2>
+<p><strong>Use Case #1: Financial Systems</strong></p>
+<p>Conflicting prices can propagate through valuation while settlement remains blocked.</p>
+<p><strong>Use Case #2: Fraud/Credit/Compliance</strong></p>
+<p>Competing classifications can remain alive while irreversible action is gated.</p>
+<p><strong>Use Case #3: Autonomous Software</strong></p>
+<p>An agent can inspect multiple candidate targets without deleting one prematurely.</p>
+<p><strong>Use Case #4: Data Pipelines</strong></p>
+<p>Downstream work can continue without silently converting missing data into a fabricated certainty.</p>
+<p>The primary conceptual pain point Lana addresses is that most software forces information states into:</p>
+<pre><code>KNOW → CONTINUE
+DON'T KNOW → ERROR / STOP / GUESS</code></pre>
+<p>Lana proposes:</p>
+<pre><code>KNOW → CONTINUE
+DON'T KNOW  → CONTINUE, PRESERVE UNCERTAINTY
+NEED TO ACT → REQUIRE RESOLUTION, THEN CONTINUE</code></pre>
+<p>Lana lets programs postpone commitment without postponing computation.</p>
+<p>The sections below cover the mathematical specification of how Lana concepts become programmable.</p>
+</section>
+<section id="the-state" class="level2">
+<h2 class="anchored" data-anchor-id="the-state">1. The state</h2>
+<p>In 1.0, Lana treats uncertainty as a first-class value. Its semantics define <code>STATE</code>, <code>STATE_DIST</code>, and the operations <code>MEASURE</code>, <code>TRANSFORM</code>, and <code>APPEND</code> as primitives.</p>
+<p>Importantly, these values describe information about a world. They do not claim to be the world itself.</p>
+<p><code>STATE</code> is a <span class="math inline">\(2 \times 2\)</span> complex matrix in the set <span class="math inline">\(\mathcal S\)</span>:</p>
+<p><span class="math display">\[
+\mathcal S = \left\{ \rho \in \mathcal L(\mathbb C^2) \mid \rho = \rho^\dagger,\; \rho \succeq 0,\; \operatorname{Tr}(\rho) = 1 \right\}.
+\]</span></p>
+<p>Every state has this form:</p>
 <p><span class="math display">\[
 \rho = \begin{pmatrix} 1-p &amp; c \\ c^* &amp; p \end{pmatrix}.
 \]</span></p>
-<p><code>p</code> is the observable probability of outcome 1 in the computational basis. <code>c</code> is an internal complex parameter. A state is valid when:</p>
+<p>The values satisfy <span class="math inline">\(0 \leq p \leq 1\)</span> and <span class="math inline">\(|c|^2 \leq p(1-p)\)</span>.</p>
+<p>The value <span class="math inline">\(p\)</span> is the probability for outcome <span class="math inline">\(1\)</span> in the computational basis. The complex value <span class="math inline">\(c\)</span> is internal state information.</p>
+<p>Lana also uses the normalized value <span class="math inline">\(d\)</span>. For <span class="math inline">\(0 &lt; p &lt; 1\)</span>, <span class="math inline">\(d = c / \sqrt{p(1-p)}\)</span>. At <span class="math inline">\(p = 0\)</span> or <span class="math inline">\(p = 1\)</span>, Lana sets <span class="math inline">\(d = 0\)</span>.</p>
+<p>These rules define valid <code>STATE</code> values. Lana treats <code>STATE</code> as an abstract mathematical value. It does not claim that every state is a physical quantum state.</p>
+</section>
+<section id="measuring-the-state" class="level2">
+<h2 class="anchored" data-anchor-id="measuring-the-state">2. Measuring the state</h2>
+<p><code>MEASURE</code> maps a concrete <code>STATE</code> to a probability distribution:</p>
 <p><span class="math display">\[
-0 \leq p \leq 1, \qquad |c|^2 \leq p(1-p).
+\operatorname{MEASURE}(\rho) = \operatorname{Bernoulli}(p).
 \]</span></p>
-<p>For values between 0 and 1, Lana can store the normalized disposition <code>d = c / sqrt(p(1-p))</code>. This gives <code>|d| &lt;= 1</code>. At <code>p = 0</code> or <code>p = 1</code>, Lana sets <code>d</code> to zero by convention.</p>
-<p>The model is abstract. Lana 1.0 does not claim that every <code>STATE</code> is a physical quantum state.</p>
-<div id="state-disk" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-13T19:26:21.166375Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-13T19:26:21.166214Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-13T19:26:21.602132Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-13T19:26:21.601720Z&quot;}}" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The unit disk is the valid region for normalized disposition d.</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">2</span> <span class="op">*</span> np.pi, <span class="dv">400</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ax.plot(np.cos(theta), np.sin(theta), color<span class="op">=</span><span class="st">"#24527a"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ax.fill(np.cos(theta), np.sin(theta), color<span class="op">=</span><span class="st">"#dceefb"</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>ax.scatter([<span class="fl">0.35</span>, <span class="op">-</span><span class="fl">0.65</span>, <span class="fl">1.15</span>], [<span class="fl">0.35</span>, <span class="fl">0.20</span>, <span class="fl">0.0</span>], c<span class="op">=</span>[<span class="st">"#1b7837"</span>, <span class="st">"#1b7837"</span>, <span class="st">"#a50f15"</span>], s<span class="op">=</span><span class="dv">60</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"#888"</span>, linewidth<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"#888"</span>, linewidth<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(title<span class="op">=</span><span class="st">"Valid normalized dispositions"</span>, xlabel<span class="op">=</span><span class="st">"Re(d)"</span>, ylabel<span class="op">=</span><span class="st">"Im(d)"</span>, aspect<span class="op">=</span><span class="st">"equal"</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="fl">0.35</span>, <span class="fl">0.42</span>, <span class="st">"valid"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="op">-</span><span class="fl">0.65</span>, <span class="fl">0.28</span>, <span class="st">"valid"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="fl">1.15</span>, <span class="fl">0.10</span>, <span class="st">"invalid"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="can-uncertainty-be-programmable_files/figure-html/cell-2-output-1.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="what-measurement-reads" class="level2">
-<h2 class="anchored" data-anchor-id="what-measurement-reads">3. What measurement reads</h2>
-<p>Computational-basis measurement reads <code>p</code>:</p>
+<p>The distribution gives outcome <span class="math inline">\(1\)</span> probability <span class="math inline">\(p\)</span> and outcome <span class="math inline">\(0\)</span> probability <span class="math inline">\(1-p\)</span>. The operation reads the state and does not change it.</p>
+<p>The computational-basis result depends on <span class="math inline">\(p\)</span>. It does not depend on <span class="math inline">\(c\)</span> or <span class="math inline">\(d\)</span>. Therefore, two states with the same <span class="math inline">\(p\)</span> have the same computational-basis measurement distribution.</p>
+<p>Lana also defines named binary bases. For the canonical value <span class="math inline">\(c = \rho_{01}\)</span>:</p>
 <p><span class="math display">\[
-P(1)=p, \qquad P(0)=1-p.
+q_{\mathrm{computational}}(\rho)=p,\qquad q_x(\rho)=\frac12-\operatorname{Re}(c),\qquad q_y(\rho)=\frac12+\operatorname{Im}(c).
 \]</span></p>
-<p>The internal value <code>c</code> does not affect this measurement. This is why two states with the same <code>p</code> have the same computational-basis distribution.</p>
-<p>Named bases can also read <code>c</code>:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Basis</th>
-<th>Probability of the first outcome</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Computational</td>
-<td><code>p</code></td>
-</tr>
-<tr class="even">
-<td><code>x</code></td>
-<td><code>1/2 + Re(c)</code></td>
-</tr>
-<tr class="odd">
-<td><code>y</code></td>
-<td><code>1/2 - Im(c)</code></td>
-</tr>
-</tbody>
-</table>
-<p>Measurement is read-only. It does not replace or collapse the state. The statement about the diagonal applies to the computational basis, not to every named basis.</p>
-<div id="measurement-example" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-13T19:26:21.603315Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-13T19:26:21.603212Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-13T19:26:21.605746Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-13T19:26:21.605319Z&quot;}}" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">0.40</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fl">0.20</span> <span class="op">+</span> <span class="ot">0.10j</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> d <span class="op">*</span> np.sqrt(p <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> p))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>basis_probabilities <span class="op">=</span> {</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"computational"</span>: p,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x"</span>: <span class="fl">0.5</span> <span class="op">-</span> c.real,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"y"</span>: <span class="fl">0.5</span> <span class="op">+</span> c.imag,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">all</span>(<span class="dv">0</span> <span class="op">&lt;=</span> value <span class="op">&lt;=</span> <span class="dv">1</span> <span class="cf">for</span> value <span class="kw">in</span> basis_probabilities.values())</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>basis_probabilities</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="2">
-<pre><code>{'computational': 0.4, 'x': 0.40202041028867286, 'y': 0.5489897948556636}</code></pre>
-</div>
-</div>
+<p>Named-basis measurement remains read-only. It does not collapse or replace the input state.</p>
 </section>
-<section id="transforming-a-state" class="level2">
-<h2 class="anchored" data-anchor-id="transforming-a-state">4. Transforming a state</h2>
-<p>A valid transform maps every valid <code>STATE</code> to another valid <code>STATE</code>. Lana 1.0 requires the transform to be deterministic, measurable, and validity-preserving.</p>
-<p>Valid transforms can be composed. Composition is associative and has an identity transform. A transform does not need to be reversible.</p>
-<p>Lana 1.0 includes two registered transforms:</p>
-<ul>
-<li><code>INVERT</code> maps <code>(p, d)</code> to <code>(1-p, conjugate(d))</code>.</li>
-<li><code>NEUTRALIZE</code> maps <code>(p, d)</code> to <code>(p, 0)</code>.</li>
-</ul>
-<p>These are abstract state operations. They are not claims about physical quantum operations.</p>
+<section id="transforming-the-state" class="level2">
+<h2 class="anchored" data-anchor-id="transforming-the-state">3. Transforming the state</h2>
+<p>A valid transform is a deterministic, Borel-measurable function:</p>
+<p><span class="math display">\[
+\Phi : \mathcal S \rightarrow \mathcal S.
+\]</span></p>
+<p>The transform must return a valid <code>STATE</code> for every input in its declared domain. Its output must satisfy <span class="math inline">\(0 \leq p' \leq 1\)</span> and <span class="math inline">\(|c'|^2 \leq p'(1-p')\)</span>.</p>
+<p>Valid transforms compose. Composition is associative, and the identity transform exists.</p>
+<p>A transform does not need an inverse. Therefore, valid transforms form a monoid, not necessarily a group.</p>
+<p>Lana 1.0 registers <code>INVERT</code> and <code>NEUTRALIZE</code> as operands for transformation. <code>INVERT</code> changes <span class="math inline">\((p,d)\)</span> to <span class="math inline">\((1-p,\overline d)\)</span>. <code>NEUTRALIZE</code> changes <span class="math inline">\((p,d)\)</span> to <span class="math inline">\((p,0)\)</span>. Both transforms preserve the state rules.</p>
 </section>
-<section id="combining-uncertainty-with-append" class="level2">
-<h2 class="anchored" data-anchor-id="combining-uncertainty-with-append">5. Combining uncertainty with <code>APPEND</code></h2>
-<p><code>APPEND</code> combines two states as independent binary events. This independence is an assumption made for that operation. Lana does not discover it from the data.</p>
-<p>The observable probability is:</p>
+<section id="appending-states" class="level2">
+<h2 class="anchored" data-anchor-id="appending-states">4. Appending states</h2>
+<p><code>APPEND(A, B)</code> accepts two concrete <code>STATE</code> values and returns a <code>STATE_DIST</code>. For this operation, Lana models the two represented events as independent. The operation does not state that all events are independent.</p>
+<p>If the input probabilities are <span class="math inline">\(p_A\)</span> and <span class="math inline">\(p_B\)</span>, the output probability is:</p>
 <p><span class="math display">\[
 p_C = 1-(1-p_A)(1-p_B).
 \]</span></p>
-<p>The internal disposition uses:</p>
+<p>The output distribution contains valid states with this value of <span class="math inline">\(p_C\)</span>. Lana computes the distribution of the internal value <span class="math inline">\(d_C\)</span> from <span class="math inline">\(d_A\)</span> and <span class="math inline">\(d_B\)</span>.</p>
+<p>For <span class="math inline">\(0 &lt; p_C &lt; 1\)</span>, define:</p>
 <p><span class="math display">\[
-m_C = \frac{d_A+d_B}{2}, \qquad \sigma_C = \frac{|d_A-d_B|}{2}.
+m_C=\frac{d_A+d_B}{2},\qquad \sigma_C=\frac{|d_A-d_B|}{2}.
 \]</span></p>
-<p>When <code>sigma_C</code> is positive, Lana samples <code>d_C</code> from a circular normal density truncated to the unit disk and then builds <code>c_C = d_C sqrt(p_C(1-p_C))</code>. When <code>sigma_C</code> is zero, <code>d_C</code> is exactly <code>m_C</code>. When <code>p_C</code> is 0 or 1, <code>d_C</code> is zero.</p>
-<p>The observable probability is commutative and associative. The internal distribution is kept as a binary tree, so grouping can change the internal result.</p>
-<div id="append-plot" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-13T19:26:21.607249Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-13T19:26:21.607154Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-13T19:26:21.657782Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-13T19:26:21.657417Z&quot;}}" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine two independent event probabilities with Lana's APPEND rule.</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> append_probability(left, right):</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">-</span> (<span class="dv">1</span> <span class="op">-</span> left) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> right)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>p_values <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">101</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>left, right <span class="op">=</span> np.meshgrid(p_values, p_values)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>combined <span class="op">=</span> append_probability(left, right)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.<span class="bu">all</span>((<span class="dv">0</span> <span class="op">&lt;=</span> combined) <span class="op">&amp;</span> (combined <span class="op">&lt;=</span> <span class="dv">1</span>))</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>))</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> ax.imshow(combined, origin<span class="op">=</span><span class="st">"lower"</span>, extent<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>], vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>, cmap<span class="op">=</span><span class="st">"viridis"</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(title<span class="op">=</span><span class="st">"Observable probability after APPEND"</span>, xlabel<span class="op">=</span><span class="st">"p_A"</span>, ylabel<span class="op">=</span><span class="st">"p_B"</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>fig.colorbar(image, ax<span class="op">=</span>ax, label<span class="op">=</span><span class="st">"p_C"</span>)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>example <span class="op">=</span> append_probability(<span class="fl">0.40</span>, <span class="fl">0.70</span>)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.isclose(example, <span class="fl">0.82</span>)</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"APPEND(0.40, 0.70) = </span><span class="sc">{</span>example<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="can-uncertainty-be-programmable_files/figure-html/cell-4-output-1.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>APPEND(0.40, 0.70) = 0.82</code></pre>
-</div>
-</div>
+<p>If <span class="math inline">\(\sigma_C &gt; 0\)</span>, <span class="math inline">\(d_C\)</span> has a truncated circular complex-normal distribution on the unit disk. If <span class="math inline">\(\sigma_C = 0\)</span>, <span class="math inline">\(d_C\)</span> has a Dirac distribution at <span class="math inline">\(m_C\)</span>. If <span class="math inline">\(p_C\)</span> is <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>, <span class="math inline">\(d_C\)</span> has a Dirac distribution at <span class="math inline">\(0\)</span>.</p>
+<p>The observable probability is bounded and associative. The internal distribution is evaluated as a binary tree. Lana 1.0 gives no associativity guarantee for that internal distribution.</p>
 </section>
-<section id="composition-and-lifting" class="level2">
-<h2 class="anchored" data-anchor-id="composition-and-lifting">6. Composition and lifting</h2>
-<p>A normal <code>STATE</code> can be embedded as a distribution with probability one. Lana can then apply supported operations to <code>STATE_DIST</code> values.</p>
-<p>A transform acts on each possible state. This creates a pushforward distribution. A lifted <code>APPEND</code> independently draws one state from each input distribution, then applies the ordinary <code>APPEND</code> rule.</p>
-<p>For computational-basis measurement of a distribution <code>mu</code>, the exact probability is the average of the concrete-state probabilities:</p>
+<section id="composition-semantics" class="level2">
+<h2 class="anchored" data-anchor-id="composition-semantics">5. Composition semantics</h2>
+<p>Lana evaluates nested operations in their written order. In:</p>
+<pre class="lana"><code>APPEND(APPEND(A, B), C)</code></pre>
+<p>the runtime evaluates <code>APPEND(A, B)</code> first. It then applies <code>APPEND</code> to that result and <code>C</code> by the declared lifted rules. It does not rewrite the expression with a different grouping.</p>
+<p>Lana embeds a concrete state <span class="math inline">\(\rho\)</span> in a distribution as the Dirac distribution <span class="math inline">\(\delta_\rho\)</span>. This embedding lets lifted operations use a concrete state as a degenerate <code>STATE_DIST</code>.</p>
+<p>For a valid transform <span class="math inline">\(\Phi\)</span> and a distribution <span class="math inline">\(\mu\)</span>, the lifted transform is the pushforward <span class="math inline">\(\Phi_*\mu\)</span>. It applies the deterministic transform to each state in the distribution.</p>
+<p>The lifted <code>APPEND</code> applies the ordinary <code>APPEND</code> rule to states from the input distributions. The output is the resulting distribution over states.</p>
+<p><code>MEASURE</code> of a <code>STATE_DIST</code> returns a probability distribution. Its outcome-1 probability is the exact expectation of the state probability:</p>
 <p><span class="math display">\[
-P(1)=\int p(\rho)\,d\mu(\rho).
+P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
 \]</span></p>
-<p>The grouping of a nested <code>APPEND</code> expression is meaningful for the internal distribution. Lana must not silently rewrite <code>APPEND(APPEND(A, B), C)</code> as <code>APPEND(A, APPEND(B, C))</code>.</p>
+<p>Sampling is separate from these exact operations. <code>SAMPLE_STATE_DIST</code> returns one concrete state and does not mutate the source distribution.</p>
 </section>
-<section id="exact-values-distributions-and-samples" class="level2">
-<h2 class="anchored" data-anchor-id="exact-values-distributions-and-samples">7. Exact values, distributions, and samples</h2>
-<p>These four ideas are different:</p>
-<ul>
-<li>An exact probability is a mathematical result, such as <code>0.82</code>.</li>
-<li>A <code>STATE_DIST</code> is a distribution over concrete states.</li>
-<li>A sample is one concrete state selected from that distribution.</li>
-<li>A Monte Carlo estimate averages repeated samples and is approximate.</li>
-</ul>
-<p><code>sample(dist)</code> returns one concrete state. The program can bind that state and use it later. Sampling does not mutate <code>dist</code>.</p>
-<p>For basis-aware probability and distribution measurement of a <code>STATE_DIST</code>, Lana 1.0 uses the explicit <code>estimate_measure</code> operation. It reports the sample average. More samples generally reduce error, but the operation does not return a confidence interval.</p>
-<div id="sampling-demo" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-13T19:26:21.659035Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-13T19:26:21.658946Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-13T19:26:21.728782Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-13T19:26:21.728245Z&quot;}}" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>true_probability <span class="op">=</span> <span class="fl">0.70</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>sample_sizes <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">50</span>, <span class="dv">500</span>]</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>estimates <span class="op">=</span> []</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sample_size <span class="kw">in</span> sample_sizes:</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    draws <span class="op">=</span> rng.binomial(<span class="dv">1</span>, true_probability, size<span class="op">=</span>sample_size)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    estimates.append(draws.mean())</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sample_size, estimate <span class="kw">in</span> <span class="bu">zip</span>(sample_sizes, estimates):</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>sample_size<span class="sc">:&gt;3}</span><span class="ss"> samples: estimate=</span><span class="sc">{</span>estimate<span class="sc">:.3f}</span><span class="ss">, exact=</span><span class="sc">{</span>true_probability<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">all</span>(<span class="dv">0</span> <span class="op">&lt;=</span> estimate <span class="op">&lt;=</span> <span class="dv">1</span> <span class="cf">for</span> estimate <span class="kw">in</span> estimates)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  5 samples: estimate=0.600, exact=0.700
- 50 samples: estimate=0.760, exact=0.700
-500 samples: estimate=0.686, exact=0.700</code></pre>
-</div>
-</div>
+<section id="boundary-conditions-and-failure-handling" class="level2">
+<h2 class="anchored" data-anchor-id="boundary-conditions-and-failure-handling">6. Boundary conditions and failure handling</h2>
+<p>The runtime rejects a <code>STATE</code> when <span class="math inline">\(p\)</span> is outside <span class="math inline">\([0,1]\)</span> or <span class="math inline">\(|c|^2 &gt; p(1-p)\)</span>. It does not reinterpret invalid input as another state.</p>
+<p>At <span class="math inline">\(p=0\)</span> or <span class="math inline">\(p=1\)</span>, the state rule requires <span class="math inline">\(c=0\)</span>. Lana sets <span class="math inline">\(d=0\)</span> at both boundaries.</p>
+<p>The runtime handles <code>APPEND</code> degeneracy explicitly. It uses the Dirac distribution at <span class="math inline">\(d_C=0\)</span> when <span class="math inline">\(p_C\)</span> is <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>. It uses the Dirac distribution at <span class="math inline">\(d_C=m_C\)</span> when <span class="math inline">\(0 &lt; p_C &lt; 1\)</span> and <span class="math inline">\(\sigma_C=0\)</span>.</p>
+<p>A transform is invalid for an input when its output does not satisfy the <code>STATE</code> invariant. The runtime rejects that result.</p>
+<p>Each operation has a declared domain. Unsupported type combinations return an error. Lana does not perform an implicit conversion unless the semantics define it.</p>
 </section>
-<section id="the-boundary-of-the-model" class="level2">
-<h2 class="anchored" data-anchor-id="the-boundary-of-the-model">8. The boundary of the model</h2>
-<p>Lana 1.0 is precise because it is limited.</p>
-<ul>
-<li><code>STATE</code> has a fixed two-dimensional representation.</li>
-<li><code>APPEND</code> uses an explicit independence assumption. It does not infer correlations.</li>
-<li><code>STATE</code> is abstract. It does not automatically mean a physical quantum system.</li>
-<li>Unsupported type combinations and unsupported exact operations return errors.</li>
-<li>Floating-point tolerance handles machine precision. It does not extend the mathematical domain.</li>
-<li>Lazy distributions defer evaluation. They do not enumerate every possible state.</li>
-</ul>
-<p>This is the important safety property: Lana does not silently turn an unknown result into a definite result.</p>
-<div id="boundary-checks" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-09-13T19:26:21.730009Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-09-13T19:26:21.729894Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-09-13T19:26:21.732004Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-09-13T19:26:21.731690Z&quot;}}" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the two mathematical conditions that define a valid state.</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> valid_state(p, c):</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span> <span class="op">&lt;=</span> p <span class="op">&lt;=</span> <span class="dv">1</span> <span class="kw">and</span> <span class="bu">abs</span>(c) <span class="op">**</span> <span class="dv">2</span> <span class="op">&lt;=</span> p <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> p)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> valid_state(<span class="fl">0.4</span>, <span class="fl">0.2</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> valid_state(<span class="fl">0.4</span>, <span class="fl">0.6</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> append_probability(<span class="fl">0.0</span>, <span class="fl">0.0</span>) <span class="op">==</span> <span class="fl">0.0</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> append_probability(<span class="fl">1.0</span>, <span class="fl">0.0</span>) <span class="op">==</span> <span class="fl">1.0</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Boundary checks passed."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Boundary checks passed.</code></pre>
-</div>
-</div>
+<section id="implementation-obligations" class="level2">
+<h2 class="anchored" data-anchor-id="implementation-obligations">7. Implementation obligations</h2>
+<p>The runtime must retain enough information to reconstruct <span class="math inline">\(p\)</span> and <span class="math inline">\(c\)</span>. If it stores <span class="math inline">\(d\)</span>, it must preserve the full complex value and reconstruct <span class="math inline">\(c=d\sqrt{p(1-p)}\)</span>.</p>
+<p><code>STATE_DIST</code> is a finite lazy expression over <code>STATE</code> values. It is not an enumeration of every possible state. A chain can remain a tree until measurement or sampling needs a result.</p>
+<p>The C runtime uses a tolerance of <span class="math inline">\(\varepsilon=10^{-12}\)</span> for accepted floating-point boundary error. This tolerance supports numerical representation. It does not expand the mathematical state domain.</p>
+<p>Sampling uses a seeded pseudo-random source. The runtime and VM documents define stream ownership and algorithm details.</p>
 </section>
-<section id="the-answer" class="level2">
-<h2 class="anchored" data-anchor-id="the-answer">9. The answer</h2>
-<p>Uncertainty is programmable when a program can represent it, preserve it, combine it, and report what it does not know.</p>
-<p>Lana 1.0 does this for a small, explicit state model. It defines values, operations, validation rules, and failure behavior. Its strength is not that it removes uncertainty. Its strength is that it prevents the program from hiding uncertainty.</p>
+<section id="conclusion-or-why-this-article-answers-the-title-question" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion-or-why-this-article-answers-the-title-question">Conclusion, or why this article answers the title question</h2>
+<p><strong>Uncertainty is programmable</strong>, provided its representation is precise, operations well-defined, and failures caught rather than silently hidden.</p>
+<p>Other languages make the programmer build uncertainity semantics, whereas Lana 1.0 treats uncertainty as data — a first-class value (<code>STATE</code>, <code>STATE_DIST</code>) with well-defined operations (<code>MEASURE</code>, <code>TRANSFORM</code>, <code>APPEND</code>, <code>SAMPLE</code>, <code>CONDITION</code>, etc.).</p>
+<p>The key insight is that when uncertainty is treated as data, the program becomes a <em>reasoning machine</em> rather than a deterministic value transformer. Everything that can be composed follows from well-defined mathematical rules.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

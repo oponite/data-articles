@@ -7,7 +7,7 @@ toc: false
 ## Math
 
 - [The Brier Score: How accurate are probability forecasts?](brier-score-btc.ipynb)
-- [Can Uncertainty Be Programmable?](can-uncertainty-be-programmable.ipynb)
+- [Can Uncertainty Be Programmable?](can-uncertainty-be-programmable.md)
 
 ## Basketball
 

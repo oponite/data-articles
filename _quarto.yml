@@ -7,7 +7,7 @@ project:
     - website/nba-scoring.ipynb
     - website/btc-accumulation.ipynb
     - website/brier-score-btc.ipynb
-    - website/can-uncertainty-be-programmable.ipynb
+    - website/can-uncertainty-be-programmable.md
 
 website:
   title: "data-articles"
