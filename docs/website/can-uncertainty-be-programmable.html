@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2026-09-13">
 
-<title>can-uncertainty-be-programmable – data-articles</title>
+<title>Can Uncertainty Be Programmable? – data-articles</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,7 +24,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
@@ -160,13 +161,13 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../website/index.html"> 
+    <a class="nav-link" href="../website/index.html">
 <span class="menu-text">Home</span></a>
-  </li>  
+  </li>
   <li class="nav-item">
-    <a class="nav-link" href="../website/articles.html"> 
+    <a class="nav-link" href="../website/articles.html">
 <span class="menu-text">Articles</span></a>
-  </li>  
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -181,11 +182,9 @@ window.Quarto = {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
-   
+
   <ul>
-  <li><a href="#can-uncertainty-be-programmable" id="toc-can-uncertainty-be-programmable" class="nav-link active" data-scroll-target="#can-uncertainty-be-programmable">Can Uncertainty Be Programmable?</a>
-  <ul class="collapse">
-  <li><a href="#a-different-computation-model" id="toc-a-different-computation-model" class="nav-link" data-scroll-target="#a-different-computation-model">A Different Computation Model</a></li>
+  <li><a href="#a-different-computation-model" id="toc-a-different-computation-model" class="nav-link active" data-scroll-target="#a-different-computation-model">A Different Computation Model</a></li>
   <li><a href="#ok-cool.-why-though" id="toc-ok-cool.-why-though" class="nav-link" data-scroll-target="#ok-cool.-why-though">OK, Cool. Why though?</a></li>
   <li><a href="#why-is-this-not-a-javapython-library" id="toc-why-is-this-not-a-javapython-library" class="nav-link" data-scroll-target="#why-is-this-not-a-javapython-library">Why is this not a Java/Python library?</a></li>
   <li><a href="#cool-idea.-does-it-survive-reality" id="toc-cool-idea.-does-it-survive-reality" class="nav-link" data-scroll-target="#cool-idea.-does-it-survive-reality">Cool idea. Does it survive reality?</a></li>
@@ -197,18 +196,37 @@ window.Quarto = {
   <li><a href="#boundary-conditions-and-failure-handling" id="toc-boundary-conditions-and-failure-handling" class="nav-link" data-scroll-target="#boundary-conditions-and-failure-handling">6. Boundary conditions and failure handling</a></li>
   <li><a href="#implementation-obligations" id="toc-implementation-obligations" class="nav-link" data-scroll-target="#implementation-obligations">7. Implementation obligations</a></li>
   <li><a href="#conclusion-or-why-this-article-answers-the-title-question" id="toc-conclusion-or-why-this-article-answers-the-title-question" class="nav-link" data-scroll-target="#conclusion-or-why-this-article-answers-the-title-question">Conclusion, or why this article answers the title question</a></li>
-  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Can Uncertainty Be Programmable?</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<section id="can-uncertainty-be-programmable" class="level1">
-<h1>Can Uncertainty Be Programmable?</h1>
+
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 13, 2026</p>
+    </div>
+  </div>
+
+
+  </div>
+
+
+
+</header>
+
+
 <p>Programming is a recipe: take inputs, apply rules, produce outputs. Mainstream programming languages generally treat uncertainty as application data rather than a fundamental property of values and computation. Specifically, when information is incomplete, a programmer must manually encode what that uncertainty means and how it should propagate.</p>
 <p>What if uncertainty itself became something a program could represent, propagate, reason about, and report?</p>
 <section id="a-different-computation-model" class="level2">
@@ -378,7 +396,6 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
 
 
 </section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -392,7 +409,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
     anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
+        if (clz.startsWith('code-annotation-')) {
           return true;
         }
       }
@@ -412,11 +429,11 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
         button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
+        tooltip = new bootstrap.Tooltip(button,
+          { trigger: "manual",
             customClass: "code-copy-button-tooltip",
             offset: [0, -8]});
-        tooltip.show();    
+        tooltip.show();
       }
       setTimeout(function() {
         if (tooltip) {
@@ -493,7 +510,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
       if (onUntriggerFn) {
         config.onUntrigger = onUntriggerFn;
       }
-      window.tippy(el, config); 
+      window.tippy(el, config);
     }
     const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
     for (var i=0; i<noterefs.length; i++) {
@@ -568,7 +585,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
       tippyHover(xref, undefined, function(instance) {
         instance.disable();
         let url = xref.getAttribute('href');
-        let hash = undefined; 
+        let hash = undefined;
         if (url.startsWith('#')) {
           hash = url;
         } else {
@@ -596,7 +613,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
               if (note !== null) {
                 const html = processXRef(id, note);
                 instance.setContent(html);
-              } 
+              }
             }).finally(() => {
               instance.enable();
               instance.show();
@@ -620,7 +637,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
               }
               const html = processXRef(null, note);
               instance.setContent(html);
-            } 
+            }
           }).finally(() => {
             instance.enable();
             instance.show();
@@ -660,7 +677,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
               height = bottom - top;
             }
             if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
+              // cook up a div (if necessary) and position it
               let div = window.document.getElementById("code-annotation-line-highlight");
               if (div === null) {
                 div = window.document.createElement("div");

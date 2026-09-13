@@ -1,4 +1,8 @@
-# Can Uncertainty Be Programmable?
+---
+title: "Can Uncertainty Be Programmable?"
+date: 2026-09-13
+date-format: long
+---
 
 Programming is a recipe: take inputs, apply rules, produce outputs. Mainstream programming languages generally treat uncertainty as application data rather than a fundamental property of values and computation. Specifically, when information is incomplete, a programmer must manually encode what that uncertainty means and how it should propagate.
 

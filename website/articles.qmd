@@ -6,13 +6,13 @@ toc: false
 
 ## Math
 
-- [The Brier Score: How accurate are probability forecasts?](brier-score-btc.ipynb)
-- [Can Uncertainty Be Programmable?](can-uncertainty-be-programmable.md)
+- [The Brier Score: How accurate are probability forecasts?](brier-score-btc.ipynb) — Published: September 4, 2026
+- [Can Uncertainty Be Programmable?](can-uncertainty-be-programmable.md) — Published: September 13, 2026
 
 ## Basketball
 
-- [What makes a basketball team win?](nba-scoring.ipynb)
+- [What makes a basketball team win?](nba-scoring.ipynb) — Published: August 1, 2026
 
 ## Finance
 
-- [Why should you accumulate BTC?](btc-accumulation.ipynb)
+- [Why should you accumulate BTC?](btc-accumulation.ipynb) — Published: August 1, 2026
