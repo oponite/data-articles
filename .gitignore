@@ -2,3 +2,4 @@
 b_*.ipynb
 **/*.quarto_ipynb
 drafts/
+SETUP.md

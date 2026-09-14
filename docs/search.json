@@ -14,11 +14,11 @@
     "text": "A Different Computation Model\nLana is a general-purpose programming language built around the explicit representation of information about modelled values and events.\nConsider the following:\nlet risk = possibility([0.4, 0.6]);\n\nif (risk &gt; 0.5) {\n    approve_loan();\n}\nImagine a language where risk does not have to collapse to one definite value before the rest of the program can continue. Imagine if that was a runtime guarantee rather than a class or library.\nThat’s essentially Lana."
   },
   {
-    "objectID": "website/can-uncertainty-be-programmable.html#ok-cool.-why-though",
-    "href": "website/can-uncertainty-be-programmable.html#ok-cool.-why-though",
+    "objectID": "website/can-uncertainty-be-programmable.html#ok-but-why-though",
+    "href": "website/can-uncertainty-be-programmable.html#ok-but-why-though",
     "title": "Can Uncertainty Be Programmable?",
-    "section": "OK, Cool. Why though?",
-    "text": "OK, Cool. Why though?\nImagine an automated trading system deciding whether to place an order.\nlet signal = possibility([0.45, 0.72]);\n\nif (signal &gt; 0.60) {\n    place_order();\n}\nThe signal is unresolved: one possible value says don’t trade, the other says trade.\nLana can continue calculating with both possibilities, but it will not let that unresolved decision trigger the external place_order() effect.\nIn other words, Lana lets you build systems that can reason with incomplete information without pretending that incomplete information is certainty."
+    "section": "OK, but why though?",
+    "text": "OK, but why though?\nImagine an automated trading system deciding whether to place an order:\nlet signal = possibility([0.45, 0.72]);\n\nif (signal &gt; 0.60) {\n    place_order();\n}\nThe signal is unresolved: one possible value says don’t trade, the other says trade.\nLana can continue calculating with both possibilities, but it will not let that unresolved decision trigger the external place_order() effect.\nIn other words, Lana lets you build systems that can reason with incomplete information without pretending that incomplete information is certainty."
   },
   {
     "objectID": "website/can-uncertainty-be-programmable.html#why-is-this-not-a-javapython-library",

@@ -26,9 +26,9 @@ Imagine a language where risk does not have to collapse to one definite value be
 
 That's essentially Lana.
 
-## OK, Cool. Why though?
+## OK, but why though?
 
-Imagine an automated trading system deciding whether to place an order.
+Imagine an automated trading system deciding whether to place an order:
 
 ```lana
 let signal = possibility([0.45, 0.72]);

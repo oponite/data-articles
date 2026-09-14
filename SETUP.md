@@ -1,16 +1,16 @@
+# Publishing Setup
 
-## Run Locally
+## 1. Render Notebook
 
-Create a virtual environment, install the Python dependencies, and start the Quarto preview server:
+From the repo root:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-quarto preview website
+quarto render website/notebook-name.md
 ```
 
-## Render the Site
+Quarto executes the notebook and writes the rendered HTML into `docs/`.
+
+## 2. Render Site
 
 Render the Quarto website with:
 
@@ -18,20 +18,16 @@ Render the Quarto website with:
 quarto render website
 ```
 
-Rendered HTML is written to `docs/` because `_quarto.yml` sets:
+This renders every file listed in `_quarto.yml` and refreshes `docs/`.
 
-```yaml
-project:
-  type: website
-  output-dir: docs
+## 3. Commit source and rendered output
+
+```
+git add website/notebook-name.ipynb docs/
+git commit -m "YOUR MESSSAGE HERE"
+git push
 ```
 
 ## Data Notes
 
 The `data/` directory contains local inputs and cached datasets used by the notebooks. Keeping these files locally avoids unnecessary downloads and makes reruns faster; notebooks can refresh missing data when their source APIs are available.
-
-## Publishing
-
-GitHub Pages is configured to publish from the `docs/` directory.
-
-Quarto writes the generated site to `docs/` because `_quarto.yml` sets `output-dir: docs`.

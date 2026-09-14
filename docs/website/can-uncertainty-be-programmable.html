@@ -24,7 +24,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
@@ -161,13 +161,13 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../website/index.html">
+    <a class="nav-link" href="../website/index.html"> 
 <span class="menu-text">Home</span></a>
-  </li>
+  </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../website/articles.html">
+    <a class="nav-link" href="../website/articles.html"> 
 <span class="menu-text">Articles</span></a>
-  </li>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -182,10 +182,10 @@ window.Quarto = {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
-
+   
   <ul>
   <li><a href="#a-different-computation-model" id="toc-a-different-computation-model" class="nav-link active" data-scroll-target="#a-different-computation-model">A Different Computation Model</a></li>
-  <li><a href="#ok-cool.-why-though" id="toc-ok-cool.-why-though" class="nav-link" data-scroll-target="#ok-cool.-why-though">OK, Cool. Why though?</a></li>
+  <li><a href="#ok-but-why-though" id="toc-ok-but-why-though" class="nav-link" data-scroll-target="#ok-but-why-though">OK, but why though?</a></li>
   <li><a href="#why-is-this-not-a-javapython-library" id="toc-why-is-this-not-a-javapython-library" class="nav-link" data-scroll-target="#why-is-this-not-a-javapython-library">Why is this not a Java/Python library?</a></li>
   <li><a href="#cool-idea.-does-it-survive-reality" id="toc-cool-idea.-does-it-survive-reality" class="nav-link" data-scroll-target="#cool-idea.-does-it-survive-reality">Cool idea. Does it survive reality?</a></li>
   <li><a href="#the-state" id="toc-the-state" class="nav-link" data-scroll-target="#the-state">1. The state</a></li>
@@ -211,17 +211,17 @@ window.Quarto = {
 
 <div class="quarto-title-meta">
 
-
+    
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
       <p class="date">September 13, 2026</p>
     </div>
   </div>
-
-
+  
+    
   </div>
-
+  
 
 
 </header>
@@ -241,9 +241,9 @@ if (risk &gt; 0.5) {
 <p>Imagine a language where risk does not have to collapse to one definite value before the rest of the program can continue. Imagine if that was a runtime guarantee rather than a class or library.</p>
 <p>That’s essentially Lana.</p>
 </section>
-<section id="ok-cool.-why-though" class="level2">
-<h2 class="anchored" data-anchor-id="ok-cool.-why-though">OK, Cool. Why though?</h2>
-<p>Imagine an automated trading system deciding whether to place an order.</p>
+<section id="ok-but-why-though" class="level2">
+<h2 class="anchored" data-anchor-id="ok-but-why-though">OK, but why though?</h2>
+<p>Imagine an automated trading system deciding whether to place an order:</p>
 <pre class="lana"><code>let signal = possibility([0.45, 0.72]);
 
 if (signal &gt; 0.60) {
@@ -409,7 +409,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
     anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {
+        if (clz.startsWith('code-annotation-')) {                     
           return true;
         }
       }
@@ -429,11 +429,11 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
         button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button,
-          { trigger: "manual",
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
             offset: [0, -8]});
-        tooltip.show();
+        tooltip.show();    
       }
       setTimeout(function() {
         if (tooltip) {
@@ -510,7 +510,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
       if (onUntriggerFn) {
         config.onUntrigger = onUntriggerFn;
       }
-      window.tippy(el, config);
+      window.tippy(el, config); 
     }
     const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
     for (var i=0; i<noterefs.length; i++) {
@@ -585,7 +585,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
       tippyHover(xref, undefined, function(instance) {
         instance.disable();
         let url = xref.getAttribute('href');
-        let hash = undefined;
+        let hash = undefined; 
         if (url.startsWith('#')) {
           hash = url;
         } else {
@@ -613,7 +613,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
               if (note !== null) {
                 const html = processXRef(id, note);
                 instance.setContent(html);
-              }
+              } 
             }).finally(() => {
               instance.enable();
               instance.show();
@@ -637,7 +637,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
               }
               const html = processXRef(null, note);
               instance.setContent(html);
-            }
+            } 
           }).finally(() => {
             instance.enable();
             instance.show();
@@ -677,7 +677,7 @@ P(X=1)=\int_{\mathcal S}p(\rho)\,d\mu(\rho).
               height = bottom - top;
             }
             if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it
+              // cook up a div (if necessary) and position it 
               let div = window.document.getElementById("code-annotation-line-highlight");
               if (div === null) {
                 div = window.document.createElement("div");
