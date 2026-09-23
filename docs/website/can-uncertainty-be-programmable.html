@@ -188,6 +188,7 @@ window.Quarto = {
   <li><a href="#ok-but-why-though" id="toc-ok-but-why-though" class="nav-link" data-scroll-target="#ok-but-why-though">OK, but why though?</a></li>
   <li><a href="#why-is-this-not-a-javapython-library" id="toc-why-is-this-not-a-javapython-library" class="nav-link" data-scroll-target="#why-is-this-not-a-javapython-library">Why is this not a Java/Python library?</a></li>
   <li><a href="#cool-idea.-does-it-survive-reality" id="toc-cool-idea.-does-it-survive-reality" class="nav-link" data-scroll-target="#cool-idea.-does-it-survive-reality">Cool idea. Does it survive reality?</a></li>
+  <li><a href="#core-abstraction" id="toc-core-abstraction" class="nav-link" data-scroll-target="#core-abstraction">Core Abstraction</a></li>
   <li><a href="#the-state" id="toc-the-state" class="nav-link" data-scroll-target="#the-state">1. The state</a></li>
   <li><a href="#measuring-the-state" id="toc-measuring-the-state" class="nav-link" data-scroll-target="#measuring-the-state">2. Measuring the state</a></li>
   <li><a href="#transforming-the-state" id="toc-transforming-the-state" class="nav-link" data-scroll-target="#transforming-the-state">3. Transforming the state</a></li>
@@ -231,15 +232,18 @@ window.Quarto = {
 <p>What if uncertainty itself became something a program could represent, propagate, reason about, and report?</p>
 <section id="a-different-computation-model" class="level2">
 <h2 class="anchored" data-anchor-id="a-different-computation-model">A Different Computation Model</h2>
-<p><strong>Lana</strong> is a general-purpose programming language built around <strong>the explicit representation of information about modelled values and events</strong>.</p>
 <p>Consider the following:</p>
 <pre class="lana"><code>let risk = possibility([0.4, 0.6]);
 
 if (risk &gt; 0.5) {
     approve_loan();
 }</code></pre>
-<p>Imagine a language where risk does not have to collapse to one definite value before the rest of the program can continue. Imagine if that was a runtime guarantee rather than a class or library.</p>
-<p>That’s essentially Lana.</p>
+<p>Imagine a programming language where:</p>
+<ul>
+<li>probabilistic reasoning is baked into the syntax, not wrapped in a library</li>
+<li>control flow can remain “unresolved”, allowing the program to propagate risk and ambiguity without forcing a premature commitment to a single value</li>
+</ul>
+<p>In a nutshell, this is <strong>Lana</strong> - a general-purpose programming language built around <strong>the explicit representation of information about modelled values and events</strong>.</p>
 </section>
 <section id="ok-but-why-though" class="level2">
 <h2 class="anchored" data-anchor-id="ok-but-why-though">OK, but why though?</h2>
@@ -250,8 +254,8 @@ if (signal &gt; 0.60) {
     place_order();
 }</code></pre>
 <p>The signal is unresolved: one possible value says <strong>don’t trade</strong>, the other says <strong>trade</strong>.</p>
-<p>Lana can continue calculating with both possibilities, but it will not let that unresolved decision trigger the external <code>place_order()</code> effect.</p>
-<p>In other words, Lana lets you build systems that can <strong>reason with incomplete information without pretending that incomplete information is certainty</strong>.</p>
+<p>Depending on the developer’s choice, other systems would have to resort to guessing error handling or manual overrides of the signal.</p>
+<p>Meanwhile, Lana can continue calculating with both possibilities. It will not let that unresolved decision trigger the external <code>place_order()</code> effect. In other words, Lana lets you build systems that can <strong>reason with incomplete information without pretending that incomplete information is certainty</strong>.</p>
 </section>
 <section id="why-is-this-not-a-javapython-library" class="level2">
 <h2 class="anchored" data-anchor-id="why-is-this-not-a-javapython-library">Why is this not a Java/Python library?</h2>
@@ -292,6 +296,9 @@ if (risk &gt; 0.5) {
 <p>An agent can inspect multiple candidate targets without deleting one prematurely.</p>
 <p><strong>Use Case #4: Data Pipelines</strong></p>
 <p>Downstream work can continue without silently converting missing data into a fabricated certainty.</p>
+</section>
+<section id="core-abstraction" class="level2">
+<h2 class="anchored" data-anchor-id="core-abstraction">Core Abstraction</h2>
 <p>The primary conceptual pain point Lana addresses is that most software forces information states into:</p>
 <pre><code>KNOW → CONTINUE
 DON'T KNOW → ERROR / STOP / GUESS</code></pre>
