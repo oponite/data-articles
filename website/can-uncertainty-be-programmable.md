@@ -10,8 +10,6 @@ What if uncertainty itself became something a program could represent, propagate
 
 ## A Different Computation Model
 
-**Lana** is a general-purpose programming language built around **the explicit representation of information about modelled values and events**.
-
 Consider the following:
 
 ```Lana
@@ -22,9 +20,12 @@ if (risk > 0.5) {
 }
 ```
 
-Imagine a language where risk does not have to collapse to one definite value before the rest of the program can continue. Imagine if that was a runtime guarantee rather than a class or library.
+Imagine a programming language where:
 
-That's essentially Lana.
+- probabilistic reasoning is baked into the syntax, not wrapped in a library
+- control flow can remain "unresolved", allowing the program to propagate risk and ambiguity without forcing a premature commitment to a single value
+
+In a nutshell, this is **Lana** - a general-purpose programming language built around **the explicit representation of information about modelled values and events**.
 
 ## OK, but why though?
 
@@ -40,9 +41,9 @@ if (signal > 0.60) {
 
 The signal is unresolved: one possible value says **don't trade**, the other says **trade**.
 
-Lana can continue calculating with both possibilities, but it will not let that unresolved decision trigger the external `place_order()` effect.
+Depending on the developer's choice, other systems would have to resort to guessing error handling or manual overrides of the signal.
 
-In other words, Lana lets you build systems that can **reason with incomplete information without pretending that incomplete information is certainty**.
+Meanwhile, Lana can continue calculating with both possibilities. It will not let that unresolved decision trigger the external `place_order()` effect. In other words, Lana lets you build systems that can **reason with incomplete information without pretending that incomplete information is certainty**.
 
 ## Why is this not a Java/Python library?
 
@@ -109,6 +110,8 @@ An agent can inspect multiple candidate targets without deleting one prematurely
 **Use Case #4: Data Pipelines**
 
 Downstream work can continue without silently converting missing data into a fabricated certainty.
+
+## Core Abstraction
 
 The primary conceptual pain point Lana addresses is that most software forces information states into:
 ```
