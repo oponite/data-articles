@@ -1,0 +1,4 @@
+claim,finding,evidence_ids,uncertainty,reviewer
+GENIUS,Strong technical competence; originality and insight remain qualified.,E05;E07;E12;E15;E23;E34;E35;E40;E41;E43;E49,No systematic novelty baseline; insight varies; effects are judged within fiction and several successes involve help.,Codex (AI)
+TORTURED,Recurring distress is supported; a persistent belief that relief is impossible is not established.,E01;E25;E27;E28;E30;E31;E36;E37;E38;E45,A narrow expression of lasting embarrassment coexists with hope and accepted help. Community dialogue is not clinical evidence.,Codex (AI)
+WELL_ADJUSTED,"Meaningful development toward flexibility and connection, with inconsistent regulation.",E03;E21;E24;E26;E29;E32;E33;E39;E42;E44;E46;E47;E48;E50;E51,Future and time-loop contexts are distinguished; later reform does not prove stable adjustment in every setting.,Codex (AI)

@@ -16,3 +16,7 @@ toc: false
 ## Finance
 
 - [Why should you accumulate BTC?](btc-accumulation.ipynb) — Published: August 1, 2026
+
+## Fiction
+
+- [Dr Doofenshmirtz: a trauma-defined yet well-adjusted genius?](doofenshmirtz-informational-audit.ipynb) — Published: October 11, 2026

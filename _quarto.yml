@@ -8,6 +8,7 @@ project:
     - website/btc-accumulation.ipynb
     - website/brier-score-btc.ipynb
     - website/can-uncertainty-be-programmable.md
+    - website/doofenshmirtz-informational-audit.ipynb
 
 website:
   title: "data-articles"

@@ -1,0 +1,123 @@
+// Count source-checked observations without treating counts as truth probabilities.
+fn claim_for(indicator) {
+    if (indicator == "technical_competence") { return "GENIUS"; }
+    if (indicator == "originality") { return "GENIUS"; }
+    if (indicator == "technical_insight") { return "GENIUS"; }
+    if (indicator == "psychological_distress") { return "TORTURED"; }
+    if (indicator == "perceived_inescapability") { return "TORTURED"; }
+    if (indicator == "emotional_regulation") { return "WELL_ADJUSTED"; }
+    if (indicator == "psychological_flexibility") { return "WELL_ADJUSTED"; }
+    assert(false, "unknown indicator");
+}
+
+fn increment(counts, key) {
+    if (map_has(counts, key)) {
+        map_set(counts, key, map_get(counts, key) + 1);
+    } else {
+        map_set(counts, key, 1);
+    }
+}
+
+fn grouped_counts(rows) {
+    let grouped = materialize(aggregate(group_by(dataset(rows), "key"), ["sum", "unit"]));
+    let counts = {};
+    let index = 0;
+    while (index < array_length(grouped)) {
+        map_set(counts, grouped[index].key, grouped[index].sum);
+        index = index + 1;
+    }
+    return counts;
+}
+
+fn count_for(counts, key) {
+    if (map_has(counts, key)) { return map_get(counts, key); }
+    return 0;
+}
+
+let input = resolve(result_value(json_parse(read_text(args()[0]))));
+let claims = ["GENIUS", "TORTURED", "WELL_ADJUSTED"];
+let indicators = ["technical_competence", "originality", "technical_insight", "psychological_distress", "perceived_inescapability", "emotional_regulation", "psychological_flexibility"];
+let polarities = ["support", "contradict", "ambiguous"];
+let codebook = [];
+let i = 0;
+while (i < array_length(indicators)) {
+    array_push(codebook, {semantic_component: indicators[i], claim: claim_for(indicators[i])});
+    i = i + 1;
+}
+
+let claim_units = [];
+let indicator_units = [];
+let classifications = [];
+let seen_ids = {};
+i = 0;
+while (i < array_length(input.observations)) {
+    let row = input.observations[i];
+    assert(!map_has(seen_ids, row.evidence_id), "duplicate evidence ID");
+    map_set(seen_ids, row.evidence_id, true);
+    let claim = claim_for(row.indicator);
+    if (row.polarity != "support") {
+        if (row.polarity != "contradict") {
+            assert(row.polarity == "ambiguous", "unknown polarity");
+        }
+    }
+    let marked = evidence(row.polarity, "reviewed_evidence.csv");
+    let polarity = resolve(marked);
+    assert(derivation(marked).operation == "evidence", "evidence provenance was lost");
+    array_push(claim_units, {key: string_concat(string_concat(claim, ":"), polarity), unit: 1});
+    array_push(indicator_units, {key: string_concat(string_concat(row.indicator, ":"), polarity), unit: 1});
+    array_push(classifications, {evidence_id: row.evidence_id, claim: claim, indicator: row.indicator, polarity: polarity, provenance_operation: derivation(marked).operation});
+    i = i + 1;
+}
+assert(array_length(classifications) > 0, "no observations");
+let claim_counts = grouped_counts(claim_units);
+let indicator_counts = grouped_counts(indicator_units);
+
+let ledger = [];
+let c = 0;
+while (c < array_length(claims)) {
+    let claim = claims[c];
+    array_push(ledger, {claim: claim, support: count_for(claim_counts, string_concat(claim, ":support")), contradict: count_for(claim_counts, string_concat(claim, ":contradict")), ambiguous: count_for(claim_counts, string_concat(claim, ":ambiguous"))});
+    c = c + 1;
+}
+let indicator_ledger = [];
+i = 0;
+while (i < array_length(indicators)) {
+    let indicator = indicators[i];
+    array_push(indicator_ledger, {indicator: indicator, support: count_for(indicator_counts, string_concat(indicator, ":support")), contradict: count_for(indicator_counts, string_concat(indicator, ":contradict")), ambiguous: count_for(indicator_counts, string_concat(indicator, ":ambiguous"))});
+    i = i + 1;
+}
+
+let file_counts = {};
+let title_counts = {};
+let checked_counts = {};
+let seen_titles = {};
+let screened_total = 0;
+let checked_total = 0;
+i = 0;
+while (i < array_length(input.manifest)) {
+    let row = input.manifest[i];
+    let season = number_to_string(row.season);
+    if (row.review_state == "full_text_ai_screened") {
+        increment(file_counts, season);
+        screened_total = screened_total + 1;
+        let title_key = string_concat(string_concat(season, ":"), row.reference_id);
+        if (!map_has(seen_titles, title_key)) {
+            map_set(seen_titles, title_key, true);
+            increment(title_counts, season);
+        }
+    }
+    if (row.evidence_passages_checked == "yes") {
+        assert(row.review_state == "full_text_ai_screened", "checked passage without screening");
+        increment(checked_counts, season);
+        checked_total = checked_total + 1;
+    }
+    i = i + 1;
+}
+let coverage = [];
+i = 1;
+while (i <= 4) {
+    let season = number_to_string(i);
+    array_push(coverage, {season: i, files_screened: count_for(file_counts, season), titles_screened: count_for(title_counts, season), files_with_checked_evidence: count_for(checked_counts, season)});
+    i = i + 1;
+}
+print(json_stringify({codebook: codebook, coverage: coverage, ledger: ledger, indicator_ledger: indicator_ledger, classifications: classifications, screened_files: screened_total, checked_files: checked_total}));
