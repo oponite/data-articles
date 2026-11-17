@@ -1,6 +1,6 @@
 {
   "hashes": {
-    "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana": "f486d9b1d8ef4b8598a1bed3c95010a0cdde769e82d54222466e46c5f987ca2c",
+    "../lana/target/lana/bin/lana": "f486d9b1d8ef4b8598a1bed3c95010a0cdde769e82d54222466e46c5f987ca2c",
     "/tmp/lana-tree-scale/expanded/baseline.py": "ff3bfba9d5716a73329639fc8d486221a95f3a0a6627f36cc227e12dacbf86e6",
     "/tmp/lana-tree-scale/expanded/banknote-42.json": "b37a7d9016dc99ab444290788eab7af92f6b93cfb6bf5916bf07991b790ebf99",
     "/tmp/lana-tree-scale/expanded/banknote-43.json": "d81d8bcb8fc0665c455d1cd522dd4c0375fa562851c91baf282bd57c2d08b003",

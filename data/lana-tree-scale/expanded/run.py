@@ -1,5 +1,5 @@
 import pathlib,csv,json,random,hashlib,collections,math,subprocess,os,time,signal,re,sys
-p=pathlib.Path('/tmp/lana-tree-scale/expanded');root=pathlib.Path('/Users/vijayneelakantan/remote-repos-on-local/lana'); datasets={'banknote':pathlib.Path('/tmp/lana-tree-scale/banknote/data.csv'),'pima':p/'pima.csv'}
+p=pathlib.Path('/tmp/lana-tree-scale/expanded');root=pathlib.Path('../lana'); datasets={'banknote':pathlib.Path('/tmp/lana-tree-scale/banknote/data.csv'),'pima':p/'pima.csv'}
 meta={};splits={}
 for name,path in datasets.items():
  raw=path.read_bytes(); rows=list(csv.reader(raw.decode().splitlines())); header=rows.pop(0) if name=='pima' else ['variance','skewness','curtosis','entropy','class']; width=len(header)-1;groups={};counts=collections.Counter();bad=[]

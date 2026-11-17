@@ -1384,7 +1384,7 @@
     ],
     "stderr": "        0.33 real         0.31 user         0.00 sys\n            49938432  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                3283  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   7  voluntary context switches\n                  66  involuntary context switches\n          6138087259  instructions retired\n          1421818556  cycles elapsed\n            43762048  peak memory footprint\n",
     "command": [
-      "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana",
+      "../lana/target/lana/bin/lana",
       "run",
       "/tmp/lana-tree-scale/expanded/banknote-42-d4.lana",
       "--memory-limit-mib",
@@ -4167,7 +4167,7 @@
     ],
     "stderr": "        0.37 real         0.35 user         0.00 sys\n            50085888  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                3294  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   7  voluntary context switches\n                  62  involuntary context switches\n          7022790914  instructions retired\n          1611361614  cycles elapsed\n            43925912  peak memory footprint\n",
     "command": [
-      "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana",
+      "../lana/target/lana/bin/lana",
       "run",
       "/tmp/lana-tree-scale/expanded/banknote-42-d6.lana",
       "--memory-limit-mib",
@@ -6950,7 +6950,7 @@
     ],
     "stderr": "        0.33 real         0.32 user         0.00 sys\n            49922048  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                3283  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   7  voluntary context switches\n                  61  involuntary context switches\n          6363994815  instructions retired\n          1458392928  cycles elapsed\n            43762072  peak memory footprint\n",
     "command": [
-      "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana",
+      "../lana/target/lana/bin/lana",
       "run",
       "/tmp/lana-tree-scale/expanded/banknote-43-d4.lana",
       "--memory-limit-mib",
@@ -9733,7 +9733,7 @@
     ],
     "stderr": "        0.38 real         0.36 user         0.00 sys\n            50462720  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                3316  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   7  voluntary context switches\n                  54  involuntary context switches\n          7145559287  instructions retired\n          1644825103  cycles elapsed\n            44302744  peak memory footprint\n",
     "command": [
-      "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana",
+      "../lana/target/lana/bin/lana",
       "run",
       "/tmp/lana-tree-scale/expanded/banknote-43-d6.lana",
       "--memory-limit-mib",
@@ -11916,7 +11916,7 @@
     ],
     "stderr": "        0.13 real         0.11 user         0.00 sys\n            43204608  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                2865  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   7  voluntary context switches\n                  59  involuntary context switches\n          2244291022  instructions retired\n           546434088  cycles elapsed\n            37044632  peak memory footprint\n",
     "command": [
-      "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana",
+      "../lana/target/lana/bin/lana",
       "run",
       "/tmp/lana-tree-scale/expanded/pima-42-d4.lana",
       "--memory-limit-mib",
@@ -13499,7 +13499,7 @@
     ],
     "stderr": "        0.15 real         0.13 user         0.00 sys\n            43614208  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                2890  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   7  voluntary context switches\n                  58  involuntary context switches\n          2559070382  instructions retired\n           623834171  cycles elapsed\n            37454232  peak memory footprint\n",
     "command": [
-      "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana",
+      "../lana/target/lana/bin/lana",
       "run",
       "/tmp/lana-tree-scale/expanded/pima-42-d6.lana",
       "--memory-limit-mib",
@@ -15082,7 +15082,7 @@
     ],
     "stderr": "        0.13 real         0.11 user         0.00 sys\n            42991616  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                2852  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   7  voluntary context switches\n                  54  involuntary context switches\n          2198099188  instructions retired\n           536328501  cycles elapsed\n            36815232  peak memory footprint\n",
     "command": [
-      "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana",
+      "../lana/target/lana/bin/lana",
       "run",
       "/tmp/lana-tree-scale/expanded/pima-43-d4.lana",
       "--memory-limit-mib",
@@ -16665,7 +16665,7 @@
     ],
     "stderr": "        0.14 real         0.13 user         0.00 sys\n            43352064  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                2876  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   7  voluntary context switches\n                  55  involuntary context switches\n          2491164422  instructions retired\n           605095732  cycles elapsed\n            37192088  peak memory footprint\n",
     "command": [
-      "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana",
+      "../lana/target/lana/bin/lana",
       "run",
       "/tmp/lana-tree-scale/expanded/pima-43-d6.lana",
       "--memory-limit-mib",
