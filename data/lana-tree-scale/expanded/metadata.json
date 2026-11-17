@@ -1,0 +1,117 @@
+{
+  "banknote": {
+    "source": "/tmp/lana-tree-scale/banknote/data.csv",
+    "sha256": "d0539aaed2139ba7a587b3e34fb345ce503ff7d5d33dbf9912d8e195ce425cb9",
+    "rows": 1372,
+    "columns": [
+      "variance",
+      "skewness",
+      "curtosis",
+      "entropy",
+      "class"
+    ],
+    "labels": {
+      "False": 762,
+      "True": 610
+    },
+    "duplicate_rows": 24,
+    "conflicting_feature_groups": 0,
+    "zero_counts": {
+      "variance": 0,
+      "skewness": 0,
+      "curtosis": 0,
+      "entropy": 0
+    }
+  },
+  "pima": {
+    "source": "/tmp/lana-tree-scale/expanded/pima.csv",
+    "sha256": "5ed9393a6bac6da073761bc7549097ae322d1a22565ba5f87d84719ef1d314d9",
+    "rows": 768,
+    "columns": [
+      "Pregnancies",
+      "Glucose",
+      "BloodPressure",
+      "SkinThickness",
+      "Insulin",
+      "BMI",
+      "DiabetesPedigreeFunction",
+      "Age",
+      "y"
+    ],
+    "labels": {
+      "True": 268,
+      "False": 500
+    },
+    "duplicate_rows": 0,
+    "conflicting_feature_groups": 0,
+    "zero_counts": {
+      "Pregnancies": 111,
+      "Glucose": 5,
+      "BloodPressure": 35,
+      "SkinThickness": 227,
+      "Insulin": 374,
+      "BMI": 11,
+      "DiabetesPedigreeFunction": 0,
+      "Age": 0
+    }
+  },
+  "splits": {
+    "banknote-42": {
+      "path": "/tmp/lana-tree-scale/expanded/banknote-42.json",
+      "sha256": "b37a7d9016dc99ab444290788eab7af92f6b93cfb6bf5916bf07991b790ebf99",
+      "train": 1098,
+      "holdout": 274,
+      "train_labels": {
+        "False": 610,
+        "True": 488
+      },
+      "holdout_labels": {
+        "False": 152,
+        "True": 122
+      }
+    },
+    "banknote-43": {
+      "path": "/tmp/lana-tree-scale/expanded/banknote-43.json",
+      "sha256": "d81d8bcb8fc0665c455d1cd522dd4c0375fa562851c91baf282bd57c2d08b003",
+      "train": 1098,
+      "holdout": 274,
+      "train_labels": {
+        "False": 610,
+        "True": 488
+      },
+      "holdout_labels": {
+        "False": 152,
+        "True": 122
+      }
+    },
+    "pima-42": {
+      "path": "/tmp/lana-tree-scale/expanded/pima-42.json",
+      "sha256": "bb1cfdfc5450e1455f29e2c7266ecaafc4c66a0331cfe5753276a54ec0f12f88",
+      "train": 614,
+      "holdout": 154,
+      "train_labels": {
+        "False": 400,
+        "True": 214
+      },
+      "holdout_labels": {
+        "False": 100,
+        "True": 54
+      }
+    },
+    "pima-43": {
+      "path": "/tmp/lana-tree-scale/expanded/pima-43.json",
+      "sha256": "1275e9af8bb594023e553e33cb6ad09a9f9a46afafc1b1d01e42df93266fa653",
+      "train": 614,
+      "holdout": 154,
+      "train_labels": {
+        "False": 400,
+        "True": 214
+      },
+      "holdout_labels": {
+        "False": 100,
+        "True": 54
+      }
+    }
+  },
+  "pima_source": "https://huggingface.co/datasets/khoaguin/pima-indians-diabetes-database/resolve/main/diabetes.csv"
+}

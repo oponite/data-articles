@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-11-17">
+
+<title>Can Lana Learn From Real Data? – data-articles</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-445b8638c3d06994fee0907d791121c4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../website/styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">data-articles</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../website/index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../website/articles.html"> 
+<span class="menu-text">Articles</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#lanas-ml-capabilities" id="toc-lanas-ml-capabilities" class="nav-link active" data-scroll-target="#lanas-ml-capabilities">Lana’s ML Capabilities</a></li>
+  <li><a href="#the-data" id="toc-the-data" class="nav-link" data-scroll-target="#the-data">The Data</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#why-this-matters" id="toc-why-this-matters" class="nav-link" data-scroll-target="#why-this-matters">Why This Matters</a></li>
+  <li><a href="#appendix-experiment-records" id="toc-appendix-experiment-records" class="nav-link" data-scroll-target="#appendix-experiment-records">Appendix: experiment records</a>
+  <ul class="collapse">
+  <li><a href="#a.-setup-and-integrity" id="toc-a.-setup-and-integrity" class="nav-link" data-scroll-target="#a.-setup-and-integrity">A. Setup and integrity</a></li>
+  <li><a href="#b.-agreement-recomputed" id="toc-b.-agreement-recomputed" class="nav-link" data-scroll-target="#b.-agreement-recomputed">B. Agreement, recomputed</a></li>
+  <li><a href="#c.-the-three-disagreements" id="toc-c.-the-three-disagreements" class="nav-link" data-scroll-target="#c.-the-three-disagreements">C. The three disagreements</a></li>
+  <li><a href="#d.-whole-run-time-and-memory" id="toc-d.-whole-run-time-and-memory" class="nav-link" data-scroll-target="#d.-whole-run-time-and-memory">D. Whole-run time and memory</a></li>
+  <li><a href="#e.-scaling-with-training-rows" id="toc-e.-scaling-with-training-rows" class="nav-link" data-scroll-target="#e.-scaling-with-training-rows">E. Scaling with training rows</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Can Lana Learn From Real Data?</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 17, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In <a href="https://oponite.github.io/data-articles/website/can-uncertainty-be-programmable.html">Can Uncertainty Be Programmable?</a>, Lana reasoned about values that I explicitly handed the program.</p>
+<p>An obvious, consequential next question follows: <strong>can Lana learn those values from data instead?</strong></p>
+<p>To find out, I gave Lana a small machine-learning job: train a decision tree. Then I checked every answer against <code>scikit-learn</code>, Python’s standard library for this kind of model.</p>
+<section id="lanas-ml-capabilities" class="level2">
+<h2 class="anchored" data-anchor-id="lanas-ml-capabilities">Lana’s ML Capabilities</h2>
+<p>A decision tree learns a chain of yes/no questions from examples. To make a prediction, it follows those questions down to an answer. Every prediction has a path you can read; that path is why this model was the right first test for Lana.</p>
+<p>This is the whole program for one comparison (the file path is shortened):</p>
+<pre class="lana"><code>import "std/trees" as trees
+let data = resolve(result_value(json_parse(read_text("pima-42.json"))))
+let result = trees.fit(data.task, data.train, data.holdout, {family: "tree", max_depth: 4, min_leaf: 2, ensemble_size: 1, seed: 42})
+print(json_stringify(result.validation_report))</code></pre>
+<p>It loads the data, trains the tree, scores it on held-out rows and prints a report.</p>
+</section>
+<section id="the-data" class="level2">
+<h2 class="anchored" data-anchor-id="the-data">The Data</h2>
+<p>I used two public datasets:</p>
+<ul>
+<li><strong><a href="https://huggingface.co/datasets/farish07/banknote-authentication-dataset">Banknote Authentication</a></strong>: 1,372 rows with 4 features measured from banknote images. The task is to label each note genuine or forged.</li>
+<li><strong><a href="https://huggingface.co/datasets/khoaguin/pima-indians-diabetes-database">Pima diabetes</a></strong>: 768 rows with 8 health measurements, such as glucose and BMI. The task is to predict the yes/no diabetes label.</li>
+</ul>
+<p>For each dataset, I made two train/test splits. Each split used about 80% of the rows to train and 20% to test. Rows with identical feature values were always kept on the same side, so no test row was also a training row.</p>
+<p>I tried two tree depths: <strong>depth 4</strong>, which allows a shorter chain of questions, and <strong>depth 6</strong>, which allows more detailed rules. Both got the same rows, feature order, depth and minimum leaf size.</p>
+<p>Two datasets × two splits × two depths gives eight comparisons. The two splits share some rows, so the 1,712 predictions are counted per comparison, not as unique rows.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th style="text-align: right;">Split</th>
+<th style="text-align: right;">Depth</th>
+<th style="text-align: right;">Lana correct</th>
+<th style="text-align: right;">scikit-learn correct</th>
+<th style="text-align: right;">Different predictions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Banknotes</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">258 / 274</td>
+<td style="text-align: right;">258 / 274</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Banknotes</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">268 / 274</td>
+<td style="text-align: right;">268 / 274</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>Banknotes</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">263 / 274</td>
+<td style="text-align: right;">263 / 274</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Banknotes</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">271 / 274</td>
+<td style="text-align: right;">271 / 274</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>Diabetes</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">103 / 154</td>
+<td style="text-align: right;">103 / 154</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Diabetes</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">110 / 154</td>
+<td style="text-align: right;">109 / 154</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td>Diabetes</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">114 / 154</td>
+<td style="text-align: right;">114 / 154</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Diabetes</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">105 / 154</td>
+<td style="text-align: right;">106 / 154</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+<p>The tools agreed on <strong>1,710 of 1,712</strong> predictions. All the banknote predictions matched. Diabetes matched fully at depth 4 and differed by one prediction per split at depth 6. Lana was right on one of those two predictions and scikit-learn on the other.</p>
+<p>Additionally, median program runtime and peak memory usage are captured. These cover starting the program, loading the data, training and predicting. Each comparison was measured three times after a warm-up.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th style="text-align: right;">Lana median time</th>
+<th style="text-align: right;">scikit-learn median time</th>
+<th style="text-align: right;">Lana peak memory</th>
+<th style="text-align: right;">scikit-learn peak memory</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Banknotes</td>
+<td style="text-align: right;">0.33–0.39 s</td>
+<td style="text-align: right;">0.55–0.56 s</td>
+<td style="text-align: right;">~48 MiB</td>
+<td style="text-align: right;">~124–125 MiB</td>
+</tr>
+<tr class="even">
+<td>Diabetes</td>
+<td style="text-align: right;">0.13–0.15 s</td>
+<td style="text-align: right;">0.55–0.57 s</td>
+<td style="text-align: right;">~41–42 MiB</td>
+<td style="text-align: right;">~124–125 MiB</td>
+</tr>
+</tbody>
+</table>
+<p>Each range covers the medians of the four comparisons for that dataset. Lana won every comparison on both time and memory.</p>
+<p><code>scikit-learn</code>’s numbers include starting Python and importing its libraries, so anyone who runs a model as a one-off command pays that cost every time.</p>
+<p><strong><em>Lana’s command-line tool doesn’t have that overhead.</em></strong></p>
+<p>To separate training from everything else, I trained on 200, 400, 600 and 800 banknote rows for just building the tree. I shuffled the rows with a fixed seed, and each larger set included the smaller ones. The tree depth stayed at 4, and the 274 test rows stayed the same.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Training rows</th>
+<th style="text-align: right;">Lana tree building</th>
+<th style="text-align: right;">scikit-learn fit</th>
+<th style="text-align: right;">Lana whole run</th>
+<th style="text-align: right;">scikit-learn whole run</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">200</td>
+<td style="text-align: right;">11.44 ms</td>
+<td style="text-align: right;">0.99 ms</td>
+<td style="text-align: right;">0.047 s</td>
+<td style="text-align: right;">0.563 s</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">400</td>
+<td style="text-align: right;">42.24 ms</td>
+<td style="text-align: right;">1.15 ms</td>
+<td style="text-align: right;">0.085 s</td>
+<td style="text-align: right;">0.552 s</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">600</td>
+<td style="text-align: right;">89.94 ms</td>
+<td style="text-align: right;">1.23 ms</td>
+<td style="text-align: right;">0.135 s</td>
+<td style="text-align: right;">0.556 s</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">800</td>
+<td style="text-align: right;">161.36 ms</td>
+<td style="text-align: right;">1.45 ms</td>
+<td style="text-align: right;">0.215 s</td>
+<td style="text-align: right;">0.557 s</td>
+</tr>
+</tbody>
+</table>
+<p>All values are medians of three runs after a warm-up.</p>
+<p>Here, <code>scikit-learn</code> builds the tree about 12× faster at 200 rows and about 110× faster at 800. When the rows grew 4×, Lana’s build time grew about 14×.</p>
+<p><strong><em>Yet, Lana still finished every whole run first.</em></strong> Its peak memory went from <code>24.5 MB</code> at 200 rows to <code>39.4 MB</code> at 800, while scikit-learn stayed at about <code>124 MB</code>.</p>
+<p>Predictions matched on all 274 test rows at 200, 400 and 800 training rows. At 600 rows, they differed by one: Lana got 259 right and scikit-learn 258. Across both experiments, that makes <strong>3 disagreements in 2,808 predictions</strong>.</p>
+<p>The <a href="#appendix-experiment-records">appendix</a> recomputes these tables and charts them from the saved records.</p>
+</section>
+<section id="why-this-matters" class="level2">
+<h2 class="anchored" data-anchor-id="why-this-matters">Why This Matters</h2>
+<p>Lana now does more than calculate with values you give it. It takes real examples, learns a model and predicts on data it hasn’t seen, and the predictions match <code>scikit-learn</code> at the tested scale.</p>
+<p>The bigger idea is what happens next. A decision tree doesn’t just give an answer; it gives the chain of questions that led there. Lana’s tree interface can expose that chain. That fits naturally with Lana’s information model, where a learned prediction would carry its evidence and uncertainty forward.</p>
+<p>This experiment establishes the learning piece. Wiring it into the uncertainty model is the next piece.</p>
+</section>
+<section id="appendix-experiment-records" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-experiment-records">Appendix: experiment records</h2>
+<p>Everything below is computed from the saved records in <code>data/lana-tree-scale/</code>, not copied from the tables above.</p>
+<div id="e87e72fe" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-17T21:39:08.727997Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-17T21:39:08.727804Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-17T21:39:09.026790Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-17T21:39:09.026321Z&quot;}}">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> hashlib</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>REPO_ROOT <span class="op">=</span> Path.cwd().parent <span class="cf">if</span> Path.cwd().name <span class="kw">in</span> {<span class="st">"drafts"</span>, <span class="st">"website"</span>} <span class="cf">else</span> Path.cwd()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>RECORDS <span class="op">=</span> REPO_ROOT <span class="op">/</span> <span class="st">"data/lana-tree-scale"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>COLORS <span class="op">=</span> {<span class="st">"Lana"</span>: <span class="st">"#2a78d6"</span>, <span class="st">"scikit-learn"</span>: <span class="st">"#eb6834"</span>}</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>plt.rcParams.update({</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"axes.spines.top"</span>: <span class="va">False</span>, <span class="st">"axes.spines.right"</span>: <span class="va">False</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"axes.grid"</span>: <span class="va">True</span>, <span class="st">"grid.alpha"</span>: <span class="fl">0.25</span>, <span class="st">"font.size"</span>: <span class="dv">10</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_json(rel): <span class="cf">return</span> json.loads((RECORDS <span class="op">/</span> rel).read_text())</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_jsonl(rel): <span class="cf">return</span> [json.loads(l) <span class="cf">for</span> l <span class="kw">in</span> (RECORDS <span class="op">/</span> rel).read_text().splitlines() <span class="cf">if</span> l.strip()]</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>perf <span class="op">=</span> read_json(<span class="st">"performance/summary.json"</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>perf_runs <span class="op">=</span> read_jsonl(<span class="st">"performance/measurements.jsonl"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>perf_manifest <span class="op">=</span> read_json(<span class="st">"performance/manifest.json"</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> read_json(<span class="st">"row-count/summary.json"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>rows_runs <span class="op">=</span> read_jsonl(<span class="st">"row-count/measurements.jsonl"</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>rows_manifest <span class="op">=</span> read_json(<span class="st">"row-count/manifest.json"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="a.-setup-and-integrity" class="level3">
+<h3 class="anchored" data-anchor-id="a.-setup-and-integrity">A. Setup and integrity</h3>
+<p>The versions used, and a check that each saved input file still has the SHA-256 hash recorded at run time.</p>
+<div id="f5d54ee1" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-17T21:39:09.028090Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-17T21:39:09.027976Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-17T21:39:09.035190Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-17T21:39:09.034804Z&quot;}}">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>versions <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    [(k, perf_manifest[k]) <span class="cf">for</span> k <span class="kw">in</span> [<span class="st">"lana_version"</span>, <span class="st">"sklearn_version"</span>, <span class="st">"python_version"</span>, <span class="st">"platform"</span>]],</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">"Item"</span>, <span class="st">"Value"</span>],</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>).set_index(<span class="st">"Item"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>display(versions)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sha256(path): <span class="cf">return</span> hashlib.sha256(path.read_bytes()).hexdigest()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>checks <span class="op">=</span> []</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> recorded_path, expected <span class="kw">in</span> perf_manifest[<span class="st">"hashes"</span>].items():</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Records were made under /tmp/lana-tree-scale; the Lana binary lives outside the records.</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    local <span class="op">=</span> RECORDS <span class="op">/</span> recorded_path.split(<span class="st">"lana-tree-scale/"</span>, <span class="dv">1</span>)[<span class="op">-</span><span class="dv">1</span>] <span class="cf">if</span> <span class="st">"lana-tree-scale/"</span> <span class="kw">in</span> recorded_path <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> (<span class="st">"match"</span> <span class="cf">if</span> sha256(local) <span class="op">==</span> expected <span class="cf">else</span> <span class="st">"MISMATCH"</span>) <span class="cf">if</span> local <span class="kw">and</span> local.exists() <span class="cf">else</span> <span class="st">"not in records"</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    checks.append((Path(recorded_path).name, status))</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>src <span class="op">=</span> RECORDS <span class="op">/</span> rows_manifest[<span class="st">"dataset_source"</span>].split(<span class="st">"lana-tree-scale/"</span>, <span class="dv">1</span>)[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>checks.append((<span class="ss">f"</span><span class="sc">{</span>src<span class="sc">.</span>name<span class="sc">}</span><span class="ss"> (row-count source)"</span>, <span class="st">"match"</span> <span class="cf">if</span> sha256(src) <span class="op">==</span> rows_manifest[<span class="st">"dataset_sha256"</span>] <span class="cf">else</span> <span class="st">"MISMATCH"</span>))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(checks, columns<span class="op">=</span>[<span class="st">"File"</span>, <span class="st">"Hash check"</span>]).set_index(<span class="st">"File"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Value</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Item</th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">lana_version</th>
+<td>Lana 4.2.0 (LABC v2, Rust VM, native compiler)</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">sklearn_version</th>
+<td>1.9.1</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">python_version</th>
+<td>Python 3.15.2</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">platform</th>
+<td>macOS-26.6-arm64-arm-64bit-Mach-O</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Hash check</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">File</th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">lana</th>
+<td>not in records</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">baseline.py</th>
+<td>match</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">banknote-42.json</th>
+<td>match</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">banknote-43.json</th>
+<td>match</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">pima-42.json</th>
+<td>match</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">pima-43.json</th>
+<td>match</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">banknote-42-d4.lana</th>
+<td>match</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">banknote-42-d6.lana</th>
+<td>match</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">banknote-43-d4.lana</th>
+<td>match</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">banknote-43-d6.lana</th>
+<td>match</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">pima-42-d4.lana</th>
+<td>match</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">pima-42-d6.lana</th>
+<td>match</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">pima-43-d4.lana</th>
+<td>match</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">pima-43-d6.lana</th>
+<td>match</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">banknote-42.json (row-count source)</th>
+<td>match</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="b.-agreement-recomputed" class="level3">
+<h3 class="anchored" data-anchor-id="b.-agreement-recomputed">B. Agreement, recomputed</h3>
+<p>Correct counts and disagreements for each of the eight comparisons, read from <code>performance/summary.json</code>.</p>
+<div id="21726a75" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-17T21:39:09.036150Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-17T21:39:09.036089Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-17T21:39:09.039682Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-17T21:39:09.039345Z&quot;}}">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>agreement <span class="op">=</span> pd.DataFrame([{</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Dataset"</span>: <span class="st">"Banknotes"</span> <span class="cf">if</span> r[<span class="st">"dataset"</span>] <span class="op">==</span> <span class="st">"banknote"</span> <span class="cf">else</span> <span class="st">"Diabetes"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Split"</span>: r[<span class="st">"seed"</span>], <span class="st">"Depth"</span>: r[<span class="st">"depth"</span>],</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Lana correct"</span>: <span class="ss">f'</span><span class="sc">{</span>r[<span class="st">"lana"</span>][<span class="st">"correct"</span>]<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>r[<span class="st">"lana"</span>][<span class="st">"count"</span>]<span class="sc">}</span><span class="ss">'</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"scikit-learn correct"</span>: <span class="ss">f'</span><span class="sc">{</span>r[<span class="st">"sklearn"</span>][<span class="st">"correct"</span>]<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>r[<span class="st">"sklearn"</span>][<span class="st">"count"</span>]<span class="sc">}</span><span class="ss">'</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Different predictions"</span>: r[<span class="st">"disagreements"</span>],</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">for</span> r <span class="kw">in</span> perf])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="bu">sum</span>(r[<span class="st">"lana"</span>][<span class="st">"count"</span>] <span class="cf">for</span> r <span class="kw">in</span> perf)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Agreed on </span><span class="sc">{</span>total <span class="op">-</span> agreement[<span class="st">"Different predictions"</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> of </span><span class="sc">{</span>total<span class="sc">:,}</span><span class="ss"> predictions'</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>agreement</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Agreed on 1,710 of 1,712 predictions</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Dataset</th>
+<th data-quarto-table-cell-role="th">Split</th>
+<th data-quarto-table-cell-role="th">Depth</th>
+<th data-quarto-table-cell-role="th">Lana correct</th>
+<th data-quarto-table-cell-role="th">scikit-learn correct</th>
+<th data-quarto-table-cell-role="th">Different predictions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Banknotes</td>
+<td>42</td>
+<td>4</td>
+<td>258 / 274</td>
+<td>258 / 274</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Banknotes</td>
+<td>42</td>
+<td>6</td>
+<td>268 / 274</td>
+<td>268 / 274</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Banknotes</td>
+<td>43</td>
+<td>4</td>
+<td>263 / 274</td>
+<td>263 / 274</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Banknotes</td>
+<td>43</td>
+<td>6</td>
+<td>271 / 274</td>
+<td>271 / 274</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Diabetes</td>
+<td>42</td>
+<td>4</td>
+<td>103 / 154</td>
+<td>103 / 154</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>Diabetes</td>
+<td>42</td>
+<td>6</td>
+<td>110 / 154</td>
+<td>109 / 154</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>Diabetes</td>
+<td>43</td>
+<td>4</td>
+<td>114 / 154</td>
+<td>114 / 154</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>Diabetes</td>
+<td>43</td>
+<td>6</td>
+<td>105 / 154</td>
+<td>106 / 154</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="c.-the-three-disagreements" class="level3">
+<h3 class="anchored" data-anchor-id="c.-the-three-disagreements">C. The three disagreements</h3>
+<p>Every test row where Lana and scikit-learn predicted differently, from the first measured run of each comparison.</p>
+<div id="93bb4bcc" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-17T21:39:09.040615Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-17T21:39:09.040552Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-17T21:39:09.044987Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-17T21:39:09.044660Z&quot;}}">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> first_measured(runs, <span class="op">**</span>match):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> {}</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> r <span class="kw">in</span> runs:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> r[<span class="st">"phase"</span>] <span class="op">==</span> <span class="st">"measured"</span> <span class="kw">and</span> <span class="bu">all</span>(r[k] <span class="op">==</span> v <span class="cf">for</span> k, v <span class="kw">in</span> match.items()):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            out.setdefault(r[<span class="st">"implementation"</span>], r)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>diffs <span class="op">=</span> []</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> perf:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    pair <span class="op">=</span> first_measured(perf_runs, dataset<span class="op">=</span>r[<span class="st">"dataset"</span>], split<span class="op">=</span>r[<span class="st">"seed"</span>], depth<span class="op">=</span>r[<span class="st">"depth"</span>])</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> <span class="ss">f'</span><span class="sc">{</span><span class="st">"Banknote"</span> <span class="cf">if</span> r[<span class="st">"dataset"</span>] <span class="op">==</span> <span class="st">"banknote"</span> <span class="cf">else</span> <span class="st">"Diabetes"</span><span class="sc">}</span><span class="ss"> split </span><span class="sc">{</span>r[<span class="st">"seed"</span>]<span class="sc">}</span><span class="ss">, depth </span><span class="sc">{</span>r[<span class="st">"depth"</span>]<span class="sc">}</span><span class="ss">'</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    sk <span class="op">=</span> {p[<span class="st">"id"</span>]: p <span class="cf">for</span> p <span class="kw">in</span> pair[<span class="st">"sklearn"</span>][<span class="st">"predictions"</span>]}</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> p <span class="kw">in</span> pair[<span class="st">"lana"</span>][<span class="st">"predictions"</span>]:</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> p[<span class="st">"prediction"</span>] <span class="op">!=</span> sk[p[<span class="st">"id"</span>]][<span class="st">"prediction"</span>]:</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            diffs.append((label, p[<span class="st">"id"</span>], p[<span class="st">"prediction"</span>], sk[p[<span class="st">"id"</span>]][<span class="st">"prediction"</span>], p[<span class="st">"target"</span>]))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="bu">sorted</span>({r[<span class="st">"rows"</span>] <span class="cf">for</span> r <span class="kw">in</span> rows}):</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    pair <span class="op">=</span> first_measured(rows_runs, rows<span class="op">=</span>n)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    sk <span class="op">=</span> {p[<span class="st">"id"</span>]: p <span class="cf">for</span> p <span class="kw">in</span> pair[<span class="st">"sklearn"</span>][<span class="st">"predictions"</span>]}</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> p <span class="kw">in</span> pair[<span class="st">"lana"</span>][<span class="st">"predictions"</span>]:</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> p[<span class="st">"prediction"</span>] <span class="op">!=</span> sk[p[<span class="st">"id"</span>]][<span class="st">"prediction"</span>]:</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>            diffs.append((<span class="ss">f"Banknote, </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> training rows, depth 4"</span>, p[<span class="st">"id"</span>], p[<span class="st">"prediction"</span>], sk[p[<span class="st">"id"</span>]][<span class="st">"prediction"</span>], p[<span class="st">"target"</span>]))</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(diffs, columns<span class="op">=</span>[<span class="st">"Experiment"</span>, <span class="st">"Row"</span>, <span class="st">"Lana"</span>, <span class="st">"scikit-learn"</span>, <span class="st">"True label"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Experiment</th>
+<th data-quarto-table-cell-role="th">Row</th>
+<th data-quarto-table-cell-role="th">Lana</th>
+<th data-quarto-table-cell-role="th">scikit-learn</th>
+<th data-quarto-table-cell-role="th">True label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Diabetes split 42, depth 6</td>
+<td>row-0294</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Diabetes split 43, depth 6</td>
+<td>row-0507</td>
+<td>True</td>
+<td>False</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Banknote, 600 training rows, depth 4</td>
+<td>row-0980</td>
+<td>True</td>
+<td>False</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="d.-whole-run-time-and-memory" class="level3">
+<h3 class="anchored" data-anchor-id="d.-whole-run-time-and-memory">D. Whole-run time and memory</h3>
+<p>Each dot is the median of three measured runs; the line through it spans the fastest and slowest run. Lower is better.</p>
+<div id="79b2b315" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-17T21:39:09.045925Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-17T21:39:09.045863Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-17T21:39:09.142097Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-17T21:39:09.141761Z&quot;}}">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="ss">f'</span><span class="sc">{</span><span class="st">"Banknote"</span> <span class="cf">if</span> r[<span class="st">"dataset"</span>] <span class="op">==</span> <span class="st">"banknote"</span> <span class="cf">else</span> <span class="st">"Diabetes"</span><span class="sc">}</span><span class="ss"> · split </span><span class="sc">{</span>r[<span class="st">"seed"</span>]<span class="sc">}</span><span class="ss"> · depth </span><span class="sc">{</span>r[<span class="st">"depth"</span>]<span class="sc">}</span><span class="ss">'</span> <span class="cf">for</span> r <span class="kw">in</span> perf]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">4.2</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>panels <span class="op">=</span> [(<span class="st">"time"</span>, <span class="st">"Whole run (seconds)"</span>, <span class="dv">1</span>), (<span class="st">"rss"</span>, <span class="st">"Peak memory (MiB)"</span>, <span class="dv">1</span>)]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (key, title, _) <span class="kw">in</span> <span class="bu">zip</span>(axes, panels):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> offset, (name, impl) <span class="kw">in</span> <span class="bu">zip</span>([<span class="op">-</span><span class="fl">0.12</span>, <span class="fl">0.12</span>], [(<span class="st">"Lana"</span>, <span class="st">"lana"</span>), (<span class="st">"scikit-learn"</span>, <span class="st">"sklearn"</span>)]):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> [i <span class="op">+</span> offset <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(perf))]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        med <span class="op">=</span> [r[impl][<span class="ss">f"</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">_median"</span>] <span class="cf">for</span> r <span class="kw">in</span> perf]</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        lo <span class="op">=</span> [r[impl][<span class="ss">f"</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">_range"</span>][<span class="dv">0</span>] <span class="cf">for</span> r <span class="kw">in</span> perf]</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        hi <span class="op">=</span> [r[impl][<span class="ss">f"</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">_range"</span>][<span class="dv">1</span>] <span class="cf">for</span> r <span class="kw">in</span> perf]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        ax.hlines(y, lo, hi, color<span class="op">=</span>COLORS[name], linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        ax.plot(med, y, <span class="st">"o"</span>, color<span class="op">=</span>COLORS[name], markersize<span class="op">=</span><span class="dv">7</span>, label<span class="op">=</span>name)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    ax.set_title(title, loc<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(left<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    ax.grid(axis<span class="op">=</span><span class="st">"y"</span>, visible<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_yticks(<span class="bu">range</span>(<span class="bu">len</span>(perf)), labels)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].invert_yaxis()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>fig.legend(<span class="op">*</span>axes[<span class="dv">0</span>].get_legend_handles_labels(), frameon<span class="op">=</span><span class="va">False</span>, ncol<span class="op">=</span><span class="dv">2</span>, loc<span class="op">=</span><span class="st">"upper center"</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>fig.tight_layout(rect<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.92</span>))</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="can-lana-learn-from-real-data_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="e.-scaling-with-training-rows" class="level3">
+<h3 class="anchored" data-anchor-id="e.-scaling-with-training-rows">E. Scaling with training rows</h3>
+<p>Banknote data, depth 4, the same 274 test rows throughout. The left chart uses a log scale, so equal vertical steps mean equal multiples.</p>
+<div id="ad5400b6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-17T21:39:09.143116Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-11-17T21:39:09.143037Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-11-17T21:39:09.230177Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-17T21:39:09.229777Z&quot;}}">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>by_impl <span class="op">=</span> {name: <span class="bu">sorted</span>((r <span class="cf">for</span> r <span class="kw">in</span> rows <span class="cf">if</span> r[<span class="st">"implementation"</span>] <span class="op">==</span> impl), key<span class="op">=</span><span class="kw">lambda</span> r: r[<span class="st">"rows"</span>])</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>           <span class="cf">for</span> name, impl <span class="kw">in</span> [(<span class="st">"Lana"</span>, <span class="st">"lana"</span>), (<span class="st">"scikit-learn"</span>, <span class="st">"sklearn"</span>)]}</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, series <span class="kw">in</span> by_impl.items():</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> [r[<span class="st">"rows"</span>] <span class="cf">for</span> r <span class="kw">in</span> series]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    build <span class="op">=</span> [r[<span class="st">"median_training_ms"</span>] <span class="cf">for</span> r <span class="kw">in</span> series]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    whole <span class="op">=</span> [r[<span class="st">"median_whole_seconds"</span>] <span class="cf">for</span> r <span class="kw">in</span> series]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax, y, fmt <span class="kw">in</span> [(axes[<span class="dv">0</span>], build, <span class="st">"</span><span class="sc">{:.1f}</span><span class="st"> ms"</span>), (axes[<span class="dv">1</span>], whole, <span class="st">"</span><span class="sc">{:.2f}</span><span class="st"> s"</span>)]:</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        ax.plot(n, y, <span class="st">"-o"</span>, color<span class="op">=</span>COLORS[name], linewidth<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">7</span>, label<span class="op">=</span>name)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        ax.annotate(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>fmt<span class="sc">.</span><span class="bu">format</span>(y[<span class="op">-</span><span class="dv">1</span>])<span class="sc">}</span><span class="ss">"</span>, (n[<span class="op">-</span><span class="dv">1</span>], y[<span class="op">-</span><span class="dv">1</span>]), xytext<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">0</span>),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                    textcoords<span class="op">=</span><span class="st">"offset points"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_yscale(<span class="st">"log"</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].yaxis.set_major_formatter(plt.FuncFormatter(<span class="kw">lambda</span> v, _: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:g}</span><span class="ss">"</span>))</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Tree building only (ms, log scale)"</span>, loc<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Whole run (seconds)"</span>, loc<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylim(bottom<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axes:</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks([<span class="dv">200</span>, <span class="dv">400</span>, <span class="dv">600</span>, <span class="dv">800</span>])</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Training rows"</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="dv">150</span>, <span class="dv">1100</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend(frameon<span class="op">=</span><span class="va">False</span>, loc<span class="op">=</span><span class="st">"center right"</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Training rows"</span>: [r[<span class="st">"rows"</span>] <span class="cf">for</span> r <span class="kw">in</span> by_impl[<span class="st">"Lana"</span>]],</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"scikit-learn builds faster by"</span>: [<span class="ss">f'</span><span class="sc">{</span>l[<span class="st">"median_training_ms"</span>] <span class="op">/</span> s[<span class="st">"median_training_ms"</span>]<span class="sc">:.0f}</span><span class="ss">×'</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                                      <span class="cf">for</span> l, s <span class="kw">in</span> <span class="bu">zip</span>(by_impl[<span class="st">"Lana"</span>], by_impl[<span class="st">"scikit-learn"</span>])],</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>}).set_index(<span class="st">"Training rows"</span>)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>ratio</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="can-lana-learn-from-real-data_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">scikit-learn builds faster by</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Training rows</th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">200</th>
+<td>12×</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">400</th>
+<td>37×</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">600</th>
+<td>73×</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">800</th>
+<td>111×</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

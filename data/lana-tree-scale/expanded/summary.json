@@ -1,0 +1,118 @@
+[
+  {
+    "dataset": "banknote",
+    "seed": 42,
+    "depth": 4,
+    "lana_correct": 258,
+    "sklearn_correct": 258,
+    "test_count": 274,
+    "disagreements": 0,
+    "disagreement_ids": [],
+    "lana_seconds": 0.3382,
+    "sklearn_seconds": 0.5606,
+    "lana_peak_mib": 47.6,
+    "sklearn_peak_mib": 124.3
+  },
+  {
+    "dataset": "banknote",
+    "seed": 42,
+    "depth": 6,
+    "lana_correct": 268,
+    "sklearn_correct": 268,
+    "test_count": 274,
+    "disagreements": 0,
+    "disagreement_ids": [],
+    "lana_seconds": 0.382,
+    "sklearn_seconds": 0.5515,
+    "lana_peak_mib": 47.8,
+    "sklearn_peak_mib": 124.4
+  },
+  {
+    "dataset": "banknote",
+    "seed": 43,
+    "depth": 4,
+    "lana_correct": 263,
+    "sklearn_correct": 263,
+    "test_count": 274,
+    "disagreements": 0,
+    "disagreement_ids": [],
+    "lana_seconds": 0.3413,
+    "sklearn_seconds": 0.554,
+    "lana_peak_mib": 47.6,
+    "sklearn_peak_mib": 126.2
+  },
+  {
+    "dataset": "banknote",
+    "seed": 43,
+    "depth": 6,
+    "lana_correct": 271,
+    "sklearn_correct": 271,
+    "test_count": 274,
+    "disagreements": 0,
+    "disagreement_ids": [],
+    "lana_seconds": 0.3841,
+    "sklearn_seconds": 0.557,
+    "lana_peak_mib": 48.1,
+    "sklearn_peak_mib": 124.3
+  },
+  {
+    "dataset": "pima",
+    "seed": 42,
+    "depth": 4,
+    "lana_correct": 103,
+    "sklearn_correct": 103,
+    "test_count": 154,
+    "disagreements": 0,
+    "disagreement_ids": [],
+    "lana_seconds": 0.1349,
+    "sklearn_seconds": 0.5526,
+    "lana_peak_mib": 41.2,
+    "sklearn_peak_mib": 124.2
+  },
+  {
+    "dataset": "pima",
+    "seed": 42,
+    "depth": 6,
+    "lana_correct": 110,
+    "sklearn_correct": 109,
+    "test_count": 154,
+    "disagreements": 1,
+    "disagreement_ids": [
+      "row-0294"
+    ],
+    "lana_seconds": 0.1528,
+    "sklearn_seconds": 0.5505,
+    "lana_peak_mib": 41.6,
+    "sklearn_peak_mib": 124.3
+  },
+  {
+    "dataset": "pima",
+    "seed": 43,
+    "depth": 4,
+    "lana_correct": 114,
+    "sklearn_correct": 114,
+    "test_count": 154,
+    "disagreements": 0,
+    "disagreement_ids": [],
+    "lana_seconds": 0.1331,
+    "sklearn_seconds": 0.557,
+    "lana_peak_mib": 41.0,
+    "sklearn_peak_mib": 124.4
+  },
+  {
+    "dataset": "pima",
+    "seed": 43,
+    "depth": 6,
+    "lana_correct": 105,
+    "sklearn_correct": 106,
+    "test_count": 154,
+    "disagreements": 1,
+    "disagreement_ids": [
+      "row-0507"
+    ],
+    "lana_seconds": 0.149,
+    "sklearn_seconds": 0.5515,
+    "lana_peak_mib": 41.3,
+    "sklearn_peak_mib": 124.4
+  }
+]

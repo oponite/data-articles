@@ -1,0 +1,4 @@
+import "std/trees" as trees;
+let data = resolve(result_value(json_parse(read_text("/tmp/lana-tree-scale/expanded/banknote-43.json"))));
+let result = trees.fit(data.task, data.train, data.holdout, {family: "tree", max_depth: 4, min_leaf: 2, ensemble_size: 1, seed: 42});
+print(json_stringify(result.validation_report));

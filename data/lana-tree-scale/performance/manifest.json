@@ -1,0 +1,23 @@
+{
+  "hashes": {
+    "/Users/vijayneelakantan/remote-repos-on-local/lana/target/lana/bin/lana": "f486d9b1d8ef4b8598a1bed3c95010a0cdde769e82d54222466e46c5f987ca2c",
+    "/tmp/lana-tree-scale/expanded/baseline.py": "ff3bfba9d5716a73329639fc8d486221a95f3a0a6627f36cc227e12dacbf86e6",
+    "/tmp/lana-tree-scale/expanded/banknote-42.json": "b37a7d9016dc99ab444290788eab7af92f6b93cfb6bf5916bf07991b790ebf99",
+    "/tmp/lana-tree-scale/expanded/banknote-43.json": "d81d8bcb8fc0665c455d1cd522dd4c0375fa562851c91baf282bd57c2d08b003",
+    "/tmp/lana-tree-scale/expanded/pima-42.json": "bb1cfdfc5450e1455f29e2c7266ecaafc4c66a0331cfe5753276a54ec0f12f88",
+    "/tmp/lana-tree-scale/expanded/pima-43.json": "1275e9af8bb594023e553e33cb6ad09a9f9a46afafc1b1d01e42df93266fa653",
+    "/tmp/lana-tree-scale/expanded/banknote-42-d4.lana": "2d735d7386cb715db11d5621f37af50841c2f3156a1acbf9c8c86a66da7d41aa",
+    "/tmp/lana-tree-scale/expanded/banknote-42-d6.lana": "deec6ed785145d525a4a4e80b2bf17064bf5832e35088d7bba37df5e8d709d3d",
+    "/tmp/lana-tree-scale/expanded/banknote-43-d4.lana": "475dc20f74c90e7a8d063586f2d58936856c22a32dfb6188fca8426d2fa393fc",
+    "/tmp/lana-tree-scale/expanded/banknote-43-d6.lana": "665432a96a168776dd00c5c42a930ad0ae3f8d11bb5bbfe517ef85aa86d3f01d",
+    "/tmp/lana-tree-scale/expanded/pima-42-d4.lana": "fcfdf6a08c2921dcdf3fda0139c6cf76d7735e5c47aace532a8f2a878bc502d4",
+    "/tmp/lana-tree-scale/expanded/pima-42-d6.lana": "cbe448cc8aecc1effc6f3daf7f545b8abe97d2e57a61925efde1d47bbc31a69e",
+    "/tmp/lana-tree-scale/expanded/pima-43-d4.lana": "0a667df4551e9ecc4b03fb6fccfb28859ccc1266982768e9c7f453d434596f01",
+    "/tmp/lana-tree-scale/expanded/pima-43-d6.lana": "e55ee4cb72eaaf41ae843a3985cbbd14cb1f2b30f9abe3d408d3108870694556"
+  },
+  "lana_version": "Lana 4.2.0 (LABC v2, Rust VM, native compiler)",
+  "python_version": "Python 3.15.2",
+  "sklearn_version": "1.9.1",
+  "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+  "machine": "arm64"
+}

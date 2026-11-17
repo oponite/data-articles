@@ -1,0 +1,290 @@
+[
+  {
+    "dataset": "banknote",
+    "seed": 42,
+    "depth": 4,
+    "lana": {
+      "n": 3,
+      "time_median": 0.332,
+      "time_range": [
+        0.331,
+        0.333
+      ],
+      "rss_median": 47.7,
+      "rss_range": [
+        47.5,
+        47.9
+      ],
+      "correct": 258,
+      "count": 274
+    },
+    "sklearn": {
+      "n": 3,
+      "time_median": 0.554,
+      "time_range": [
+        0.552,
+        0.556
+      ],
+      "rss_median": 124.3,
+      "rss_range": [
+        124.3,
+        124.4
+      ],
+      "correct": 258,
+      "count": 274
+    },
+    "disagreements": 0
+  },
+  {
+    "dataset": "banknote",
+    "seed": 42,
+    "depth": 6,
+    "lana": {
+      "n": 3,
+      "time_median": 0.38,
+      "time_range": [
+        0.377,
+        0.384
+      ],
+      "rss_median": 47.9,
+      "rss_range": [
+        47.8,
+        50.4
+      ],
+      "correct": 268,
+      "count": 274
+    },
+    "sklearn": {
+      "n": 3,
+      "time_median": 0.554,
+      "time_range": [
+        0.553,
+        0.554
+      ],
+      "rss_median": 124.4,
+      "rss_range": [
+        124.3,
+        124.4
+      ],
+      "correct": 268,
+      "count": 274
+    },
+    "disagreements": 0
+  },
+  {
+    "dataset": "banknote",
+    "seed": 43,
+    "depth": 4,
+    "lana": {
+      "n": 3,
+      "time_median": 0.35,
+      "time_range": [
+        0.345,
+        0.35
+      ],
+      "rss_median": 47.7,
+      "rss_range": [
+        47.5,
+        47.9
+      ],
+      "correct": 263,
+      "count": 274
+    },
+    "sklearn": {
+      "n": 3,
+      "time_median": 0.553,
+      "time_range": [
+        0.551,
+        0.553
+      ],
+      "rss_median": 124.4,
+      "rss_range": [
+        124.4,
+        124.4
+      ],
+      "correct": 263,
+      "count": 274
+    },
+    "disagreements": 0
+  },
+  {
+    "dataset": "banknote",
+    "seed": 43,
+    "depth": 6,
+    "lana": {
+      "n": 3,
+      "time_median": 0.388,
+      "time_range": [
+        0.388,
+        0.39
+      ],
+      "rss_median": 47.7,
+      "rss_range": [
+        47.7,
+        48.1
+      ],
+      "correct": 271,
+      "count": 274
+    },
+    "sklearn": {
+      "n": 3,
+      "time_median": 0.559,
+      "time_range": [
+        0.554,
+        0.584
+      ],
+      "rss_median": 124.7,
+      "rss_range": [
+        124.5,
+        124.8
+      ],
+      "correct": 271,
+      "count": 274
+    },
+    "disagreements": 0
+  },
+  {
+    "dataset": "pima",
+    "seed": 42,
+    "depth": 4,
+    "lana": {
+      "n": 3,
+      "time_median": 0.135,
+      "time_range": [
+        0.134,
+        0.139
+      ],
+      "rss_median": 41.1,
+      "rss_range": [
+        41.0,
+        41.3
+      ],
+      "correct": 103,
+      "count": 154
+    },
+    "sklearn": {
+      "n": 3,
+      "time_median": 0.559,
+      "time_range": [
+        0.555,
+        0.562
+      ],
+      "rss_median": 124.5,
+      "rss_range": [
+        124.4,
+        125.7
+      ],
+      "correct": 103,
+      "count": 154
+    },
+    "disagreements": 0
+  },
+  {
+    "dataset": "pima",
+    "seed": 42,
+    "depth": 6,
+    "lana": {
+      "n": 3,
+      "time_median": 0.153,
+      "time_range": [
+        0.153,
+        0.153
+      ],
+      "rss_median": 41.3,
+      "rss_range": [
+        41.3,
+        41.7
+      ],
+      "correct": 110,
+      "count": 154
+    },
+    "sklearn": {
+      "n": 3,
+      "time_median": 0.555,
+      "time_range": [
+        0.554,
+        0.56
+      ],
+      "rss_median": 124.4,
+      "rss_range": [
+        124.3,
+        124.5
+      ],
+      "correct": 109,
+      "count": 154
+    },
+    "disagreements": 1
+  },
+  {
+    "dataset": "pima",
+    "seed": 43,
+    "depth": 4,
+    "lana": {
+      "n": 3,
+      "time_median": 0.134,
+      "time_range": [
+        0.133,
+        0.134
+      ],
+      "rss_median": 41.1,
+      "rss_range": [
+        41.0,
+        41.4
+      ],
+      "correct": 114,
+      "count": 154
+    },
+    "sklearn": {
+      "n": 3,
+      "time_median": 0.569,
+      "time_range": [
+        0.554,
+        0.571
+      ],
+      "rss_median": 124.6,
+      "rss_range": [
+        124.4,
+        125.0
+      ],
+      "correct": 114,
+      "count": 154
+    },
+    "disagreements": 0
+  },
+  {
+    "dataset": "pima",
+    "seed": 43,
+    "depth": 6,
+    "lana": {
+      "n": 3,
+      "time_median": 0.149,
+      "time_range": [
+        0.148,
+        0.15
+      ],
+      "rss_median": 41.6,
+      "rss_range": [
+        41.6,
+        41.7
+      ],
+      "correct": 105,
+      "count": 154
+    },
+    "sklearn": {
+      "n": 3,
+      "time_median": 0.555,
+      "time_range": [
+        0.552,
+        0.556
+      ],
+      "rss_median": 124.4,
+      "rss_range": [
+        124.2,
+        124.5
+      ],
+      "correct": 106,
+      "count": 154
+    },
+    "disagreements": 1
+  }
+]
